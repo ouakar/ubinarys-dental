@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Environment files — NEVER commit secrets
+.env
+.env.*
+.variables.env
+*.env
+
+# Build outputs
+dist/
+build/
+.cache/
+.vite/
+.parcel-cache/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# PDF / generated files
+public/invoices/
+public/quotes/
+
+# Uploads
+public/uploads/
+
+# Test coverage
+coverage/
