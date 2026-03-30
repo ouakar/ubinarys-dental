@@ -261,7 +261,7 @@ html
       header.clearfix
         .top-area
           if settings.company_logo
-            img.logo.left(src=settings.public_server_file+settings.company_logo)
+            img.logo.left(src=settings.logoUrl alt="Logo" style="max-height:80px; margin-bottom:10px;")
           .right.company-info
               p.strong #{settings.company_name}
               p #{settings.company_address}

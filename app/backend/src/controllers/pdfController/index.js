@@ -56,7 +56,10 @@ exports.generatePdf = async (
       });
       const { dateFormat } = useDate({ settings });
 
-      settings.public_server_file = process.env.PUBLIC_SERVER_FILE;
+      const base = process.env.PUBLIC_SERVER_FILE?.replace(/\/$/, '');
+      const logo = settings.company_logo?.replace(/^\//, '');
+      settings.logoUrl = base && logo ? `${base}/${logo}` : '';
+      settings.public_server_file = base ? `${base}/` : '';
 
       const htmlContent = pug.renderFile('src/pdf/' + modelName + '.pug', {
         model: result,

@@ -31,12 +31,19 @@ const mail = async (req, res) => {
   }
 
   const settings = await loadSettings();
-  const logoUrl = settings.company_logo ? process.env.PUBLIC_SERVER_FILE + settings.company_logo : '';
-  const logoHtml = logoUrl ? `<img src="${logoUrl}" alt="Company Logo" style="max-height: 80px; margin-bottom: 20px;"/><br>` : '';
+  const base = process.env.PUBLIC_SERVER_FILE?.replace(/\/$/, '');
+  const logo = settings.company_logo?.replace(/^\//, '');
+  const logoUrl = base && logo ? `${base}/${logo}` : '';
+  
+  const logoHtml = logoUrl
+    ? `<img src="${logoUrl}" alt="Logo" style="max-height:60px; display:block; margin-bottom:12px;"/>`
+    : '';
 
   const subject = `Quote ${result.number}/${result.year}`;
+  const clinicName = settings?.company_name || 'Cabinet Dentaire';
   const html = `
     ${logoHtml}
+    <h2>${clinicName}</h2>
     <p>Hello ${result.client.name},</p>
     <p>Please find attached your quote.</p>
     <p>Best regards,</p>
