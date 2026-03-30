@@ -20,37 +20,37 @@
   {
     "settingCategory": "company_settings",
     "settingKey": "company_address",
-    "settingValue": "25 , Your Company Address",
+    "settingValue": "Votre adresse, Fès",
     "valueType": "string"
   },
   {
     "settingCategory": "company_settings",
     "settingKey": "company_state",
-    "settingValue": "New York",
+    "settingValue": "Fès-Meknès",
     "valueType": "string"
   },
   {
     "settingCategory": "company_settings",
     "settingKey": "company_country",
-    "settingValue": "United State",
+    "settingValue": "Maroc",
     "valueType": "string"
   },
   {
     "settingCategory": "company_settings",
     "settingKey": "company_email",
-    "settingValue": "youremail@example.com",
+    "settingValue": "contact@clinique.ma",
     "valueType": "string"
   },
   {
     "settingCategory": "company_settings",
     "settingKey": "company_phone",
-    "settingValue": "+1 345234654",
+    "settingValue": "+212 5XX XXX XXX",
     "valueType": "string"
   },
   {
     "settingCategory": "company_settings",
     "settingKey": "company_website",
-    "settingValue": "www.example.com",
+    "settingValue": "www.clinique.ma",
     "valueType": "string"
   },
   {
@@ -75,6 +75,12 @@
     "settingCategory": "company_settings",
     "settingKey": "company_bank_account",
     "settingValue": "iban : 00001231421",
+    "valueType": "string"
+  },
+  {
+    "settingCategory": "company_settings",
+    "settingKey": "company_branding_mode",
+    "settingValue": "name",
     "valueType": "string"
   }
 ]
