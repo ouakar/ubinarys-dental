@@ -2,8 +2,15 @@ import { Form, InputNumber } from 'antd';
 import { useMoney } from '@/settings';
 
 export default function MoneyInputFormItem({ updatePrice, value = 0, readOnly = false }) {
-  const { amountFormatter, currency_symbol, currency_position, cent_precision, currency_code } =
-    useMoney();
+  const {
+    amountFormatter,
+    currency_symbol,
+    currency_position,
+    cent_precision,
+    currency_code,
+    thousand_sep,
+    decimal_sep,
+  } = useMoney();
 
   return (
     <Form.Item>

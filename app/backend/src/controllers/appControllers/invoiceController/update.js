@@ -52,7 +52,9 @@ const update = async (req, res) => {
     //sub total
     subTotal += itemTotal;
     //item total
-    item['total'] = itemTotal;
+    item['subTotal'] = itemTotal;
+    item['taxTotal'] = itemTotal * ((parseFloat(item['taxRate']) || 0) / 100);
+    item['total'] = itemTotal + item['taxTotal'];
   });
   taxTotal = subTotal * (parseFloat(taxRate) / 100 || 0);
   total = subTotal + taxTotal;

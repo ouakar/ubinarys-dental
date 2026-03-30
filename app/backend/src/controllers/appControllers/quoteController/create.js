@@ -38,7 +38,9 @@ const create = async (req, res) => {
     //sub total
     subTotal = calculate.add(subTotal, total);
     //item total
-    item['total'] = total;
+    item['subTotal'] = total;
+    item['taxTotal'] = calculate.multiply(total, (item['taxRate'] || 0) / 100);
+    item['total'] = calculate.add(item['subTotal'], item['taxTotal']);
   });
   taxTotal = calculate.multiply(subTotal, taxRate / 100);
   total = calculate.add(subTotal, taxTotal);
