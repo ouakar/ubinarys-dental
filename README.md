@@ -1,7 +1,7 @@
 # Ubinarys Dental Cloud SaaS
 
 <p align="center">
-  <img src="idurar/frontend/src/style/images/logo-icon.svg" alt="Ubinarys Logo" width="80"/>
+  <img src="app/frontend/src/style/images/logo-icon.svg" alt="Ubinarys Logo" width="80"/>
 </p>
 
 <p align="center">
@@ -54,11 +54,11 @@ cd ubinarys-dental
 
 ### 2. Backend setup
 ```bash
-cd idurar/backend
+cd app/backend
 npm install
 ```
 
-Create `.variables.env` in `idurar/backend/`:
+Create `.variables.env` in `app/backend/`:
 ```env
 DATABASE="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=ubinarys"
 JWT_SECRET="your-strong-random-secret"
@@ -97,7 +97,7 @@ npm run dev
 
 ```
 ubinarys-dental/
-├── idurar/
+├── app/
 │   ├── backend/               # Node.js + Express API
 │   │   ├── src/
 │   │   │   ├── controllers/   # CRUD + custom (invoice, appointment, reports)
