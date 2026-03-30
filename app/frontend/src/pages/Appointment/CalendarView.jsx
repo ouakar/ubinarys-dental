@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Badge, Calendar } from 'antd';
 import { request } from '@/request';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
+dayjs.extend(customParseFormat);
 export default function CalendarView() {
   const [appointments, setAppointments] = useState([]);
 
@@ -25,7 +28,18 @@ export default function CalendarView() {
     const targetDate = value.format('YYYY-MM-DD');
 
     appointments.forEach((appt) => {
-      const apptDate = new Date(appt.startTime).toISOString().split('T')[0];
+      // Robustly parse the date, handling both ISO and DD/MM/YYYY HH:mm formats
+      let parsedDate = dayjs(appt.startTime);
+      if (!parsedDate.isValid()) {
+        parsedDate = dayjs(appt.startTime, "DD/MM/YYYY HH:mm", true); // Strict parsing
+      }
+      if (!parsedDate.isValid()) {
+        parsedDate = dayjs(appt.startTime, "MM/DD/YYYY HH:mm"); // Fallback
+      }
+
+      if (!parsedDate.isValid()) return;
+
+      const apptDate = parsedDate.format('YYYY-MM-DD');
       if (apptDate === targetDate) {
         let type = 'success';
         if (appt.status === 'booked') type = 'warning';
@@ -34,7 +48,7 @@ export default function CalendarView() {
         
         listData.push({
           type,
-          content: `${new Date(appt.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${appt.patient?.name || 'Unknown'}`,
+          content: `${parsedDate.format('HH:mm')} - ${appt.patient?.name || 'Unknown'}`,
         });
       }
     });
