@@ -27,7 +27,7 @@ const BrandingPreview = ({ logo, name, mode }) => {
     >
       {displayLogo && logo ? (
         <img
-          src={FILE_BASE_URL + logo}
+          src={`${FILE_BASE_URL}${logo}?t=${Date.now()}`}
           alt="Clinic Logo"
           style={{ maxHeight: '40px', maxWidth: '200px', objectFit: 'contain' }}
         />

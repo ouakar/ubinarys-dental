@@ -197,20 +197,32 @@ function Sidebar({ collapsible, isMobile = false }) {
         onClick={() => navigate('/')}
         style={{
           cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
         }}
       >
-        <img src={logoIcon} alt="Logo" style={{ marginLeft: '-5px', height: '40px' }} />
+        <img 
+          src={company_logo ? `${FILE_BASE_URL}${company_logo}?t=${Date.now()}` : logoIcon} 
+          alt="Logo" 
+          style={{ marginLeft: '-5px', height: '40px', maxWidth: '40px', objectFit: 'contain' }} 
+        />
 
         {!showLogoApp && (
-          <img
-            src={logoText}
-            alt="Logo"
+          <span
             style={{
               marginTop: '3px',
-              marginLeft: '10px',
-              height: '38px',
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#1d39c4',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '180px'
             }}
-          />
+          >
+            {company_name || 'Ubinarys'}
+          </span>
         )}
       </div>
       <Menu

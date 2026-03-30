@@ -26,7 +26,7 @@ const updateManySetting = async (req, res) => {
     updateDataArray.push({
       updateOne: {
         filter: { settingKey: settingKey },
-        update: { settingValue: settingValue, settingCategory: 'clinic_settings' },
+        update: { $set: { settingValue: settingValue } },
         upsert: true,
       },
     });
