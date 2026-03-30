@@ -21,17 +21,16 @@ const updateBySettingKey = async (req, res) => {
       message: 'No settingValue provided ',
     });
   }
-  const result = await Model.findOneAndUpdate(
-    { settingKey },
+  const result = await Model.updateMany(
+    { settingKey, removed: false },
     {
       settingValue,
     },
     {
-      new: true, // return the new result instead of the old one
       runValidators: true,
     }
   ).exec();
-  if (!result) {
+  if (result.matchedCount === 0) {
     return res.status(404).json({
       success: false,
       result: null,
