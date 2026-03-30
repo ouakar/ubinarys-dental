@@ -9,7 +9,7 @@ const updateManySetting = async (req, res) => {
   const { settings } = req.body;
 
   for (const setting of settings) {
-    if (!setting.hasOwnProperty('settingKey') || !setting.hasOwnProperty('settingValue')) {
+    if (!setting || !setting.settingKey) {
       settingsHasError = true;
       break;
     }
@@ -48,7 +48,7 @@ const updateManySetting = async (req, res) => {
   }
   const result = await Model.bulkWrite(updateDataArray);
 
-  if (!result || result.nMatched < 1) {
+  if (!result) {
     return res.status(404).json({
       success: false,
       result: null,
