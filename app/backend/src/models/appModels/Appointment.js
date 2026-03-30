@@ -12,13 +12,11 @@ const schema = new mongoose.Schema({
   patient: {
     type: mongoose.Schema.ObjectId,
     ref: 'Client',
-    required: true,
     autopopulate: true,
   },
   dentist: {
     type: mongoose.Schema.ObjectId,
     ref: 'Admin',
-    required: true,
     autopopulate: true,
   },
   clinic: {

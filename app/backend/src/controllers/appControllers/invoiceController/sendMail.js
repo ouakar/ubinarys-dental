@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Model = mongoose.model('Invoice');
 const sendEmail = require('@/utils/sendEmail');
+const custom = require('@/controllers/pdfController');
+const { loadSettings } = require('@/middlewares/settings');
 
 const mail = async (req, res) => {
   const { id } = req.body;
@@ -30,22 +32,40 @@ const mail = async (req, res) => {
     });
   }
 
+  const settings = await loadSettings();
+  const logoUrl = settings.company_logo ? process.env.PUBLIC_SERVER_FILE + settings.company_logo : '';
+  const logoHtml = logoUrl ? `<img src="${logoUrl}" alt="Company Logo" style="max-height: 80px; margin-bottom: 20px;"/><br>` : '';
+
   const subject = `Invoice ${result.number}/${result.year}`;
   const html = `
+    ${logoHtml}
     <p>Hello ${result.client.name},</p>
     <p>Please find attached your invoice.</p>
     <p>Best regards,</p>
   `;
 
   try {
+    const fileId = 'invoice-' + result._id + '.pdf';
+    const folderPath = 'invoice';
+    const targetLocation = `src/public/download/${folderPath}/${fileId}`;
+
+    await new Promise((resolve, reject) => {
+      custom.generatePdf(
+        'Invoice',
+        { filename: folderPath, format: 'A4', targetLocation },
+        result,
+        () => resolve()
+      ).catch(reject);
+    });
+
     await sendEmail({
       email: clientEmail,
       subject: subject,
       html: html,
-      attachments: result.pdf ? [{
+      attachments: [{
         filename: `Invoice_${result.number}_${result.year}.pdf`,
-        path: result.pdf // Assuming result.pdf is a full path or accessible URL
-      }] : []
+        path: targetLocation
+      }]
     });
 
     return res.status(200).json({

@@ -1,0 +1,13 @@
+app/backend/src/models/utils/index.js
+app/backend/src/models/coreModels/AdminPassword.js
+app/backend/src/models/coreModels/Setting.js
+app/backend/src/models/coreModels/Upload.js
+app/backend/src/models/coreModels/Admin.js
+app/backend/src/models/appModels/Client.js
+app/backend/src/models/appModels/Quote.js
+app/backend/src/models/appModels/Treatment.js
+app/backend/src/models/appModels/Appointment.js
+app/backend/src/models/appModels/PaymentMode.js
+app/backend/src/models/appModels/Invoice.js
+app/backend/src/models/appModels/Payment.js
+app/backend/src/models/appModels/Taxes.js
