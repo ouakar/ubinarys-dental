@@ -1,6 +1,11 @@
 const update = async (Model, req, res) => {
   // Find document by id and updates with the required fields
   req.body.removed = false;
+  
+  // Safe finalization: If a manual full-form save sends clinicalNotes but omits the explicit draft payload, erase all drafts
+  if (req.body.clinicalNotes !== undefined && req.body.draftClinicalNotes === undefined) {
+    req.body.draftClinicalNotes = {};
+  }
   const result = await Model.findOneAndUpdate(
     {
       _id: req.params.id,

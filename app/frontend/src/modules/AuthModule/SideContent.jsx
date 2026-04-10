@@ -1,7 +1,5 @@
-import { Space, Layout, Divider, Typography } from 'antd';
-import logo from '@/style/images/ubinarys-crm-erp.svg';
+import logo from '@/style/images/logo-with-text.png';
 import useLanguage from '@/locale/useLanguage';
-import { useSelector } from 'react-redux';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -23,9 +21,13 @@ export default function SideContent() {
         <img
           src={logo}
           alt="Ubinarys"
-          style={{ margin: '0 0 40px', display: 'block' }}
-          height={63}
-          width={220}
+          style={{ 
+            margin: '0 0 40px', 
+            display: 'block',
+            maxHeight: '100px',
+            width: 'auto',
+            objectFit: 'contain'
+          }}
         />
 
         <Title level={1} style={{ fontSize: 24, color: '#13c2c2' }}>

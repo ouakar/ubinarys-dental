@@ -57,7 +57,7 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
       next();
     }
   } catch (error) {
-    return res.status(500).json({
+    return res.status(401).json({
       success: false,
       result: null,
       message: error.message,

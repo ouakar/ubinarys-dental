@@ -9,8 +9,7 @@ import { selectCompanySettings } from '@/redux/settings/selectors';
 import { FILE_BASE_URL } from '@/config/serverApiConfig';
 
 import useLanguage from '@/locale/useLanguage';
-import logoIcon from '@/style/images/logo-icon.svg';
-import logoText from '@/style/images/logo-text.svg';
+import logoIcon from '@/style/images/logo.png';
 
 import useResponsive from '@/hooks/useResponsive';
 

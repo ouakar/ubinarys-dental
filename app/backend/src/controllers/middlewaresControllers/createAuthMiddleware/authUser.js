@@ -13,30 +13,23 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
 
   if (isMatch === true) {
     const token = jwt.sign(
-      {
-        id: user._id,
-      },
+      { id: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: req.body.remember ? 365 * 24 + 'h' : '24h' }
+      { expiresIn: '15m' }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: req.body.remember ? '365d' : '7d' }
     );
 
     await UserPasswordModel.findOneAndUpdate(
       { user: user._id },
-      { $push: { loggedSessions: token } },
-      {
-        new: true,
-      }
+      { $push: { loggedSessions: { $each: [token, refreshToken], $slice: -50 } } },
+      { new: true }
     ).exec();
 
-    // .cookie(`token_${user.cloud}`, token, {
-    //     maxAge: req.body.remember ? 365 * 24 * 60 * 60 * 1000 : null,
-    //     sameSite: 'None',
-    //     httpOnly: true,
-    //     secure: true,
-    //     domain: req.hostname,
-    //     path: '/',
-    //     Partitioned: true,
-    //   })
     res.status(200).json({
       success: true,
       result: {
@@ -47,6 +40,7 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
         email: user.email,
         photo: user.photo,
         token: token,
+        refreshToken: refreshToken,
         maxAge: req.body.remember ? 365 : null,
       },
       message: 'Successfully login user',

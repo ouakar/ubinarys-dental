@@ -24,6 +24,81 @@ function includeToken() {
   }
 }
 
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // Check if error is 401/403 and the request hasn't been retried yet
+    if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
+      if (originalRequest.url.includes('/login') || originalRequest.url.includes('/refresh')) {
+        return Promise.reject(error);
+      }
+
+      if (isRefreshing) {
+        return new Promise(function(resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          originalRequest.headers['Authorization'] = 'Bearer ' + token;
+          return axios(originalRequest);
+        }).catch(err => {
+          return Promise.reject(err);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      const auth = storePersist.get('auth');
+      const refreshToken = auth?.current?.refreshToken;
+
+      if (!refreshToken) {
+         isRefreshing = false;
+         return Promise.reject(error);
+      }
+
+      try {
+         const refreshResponse = await axios.post(API_BASE_URL + 'refresh', { refreshToken });
+         const newToken = refreshResponse.data.result.token;
+         const newRefreshToken = refreshResponse.data.result.refreshToken;
+         
+         if (newRefreshToken) {
+           storePersist.set('auth', { ...auth, current: { ...auth.current, token: newToken, refreshToken: newRefreshToken } });
+         } else {
+           storePersist.set('auth', { ...auth, current: { ...auth.current, token: newToken } });
+         }
+         
+         axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+         originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+         
+         processQueue(null, newToken);
+         isRefreshing = false;
+         return axios(originalRequest);
+      } catch (err) {
+         processQueue(err, null);
+         isRefreshing = false;
+         return Promise.reject(err);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 const request = {
   create: async ({ entity, jsonData }) => {
     try {

@@ -9,6 +9,7 @@ import SelectAsync from '@/components/SelectAsync';
 import { generate as uniqueId } from 'shortid';
 
 import { countryList } from '@/utils/countryList';
+import AutosaveTextArea from './AutosaveTextArea';
 
 export default function DynamicForm({ fields, isUpdateForm = false }) {
   const [feedback, setFeedback] = useState();
@@ -337,6 +338,9 @@ function FormElement({ field, feedback, setFeedback }) {
         addonAfter={money.currency_position === 'after' ? money.currency_symbol : undefined}
         addonBefore={money.currency_position === 'before' ? money.currency_symbol : undefined}
       />
+    ),
+    autosave: (
+      <AutosaveTextArea entity={field.entity} fieldName={field.name} />
     ),
   };
 

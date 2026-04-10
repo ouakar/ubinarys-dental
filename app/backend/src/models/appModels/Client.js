@@ -47,6 +47,7 @@ const schema = new mongoose.Schema({
   allergies: String,
   ongoingConditions: String,
   clinicalNotes: String,
+  draftClinicalNotes: { type: mongoose.Schema.Types.Mixed, default: {} },
   preferredLanguage: {
     type: String,
     enum: ['AR', 'FR'],

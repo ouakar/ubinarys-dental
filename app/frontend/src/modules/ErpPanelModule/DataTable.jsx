@@ -203,6 +203,8 @@ export default function DataTable({ config, extra = [] }) {
       ></PageHeader>
 
       <Table
+        className="[&_.ant-table-thead_th]:!bg-white [&_.ant-table-thead_th]:!text-slate-500 [&_.ant-table-thead_th]:!font-medium [&_.ant-table-thead_th]:!border-b [&_.ant-table-thead_th]:!border-slate-200 [&_.ant-table-tbody_td]:!border-b [&_.ant-table-tbody_td]:!border-slate-100 [&_.ant-table-tbody_td]:!py-3"
+        rowClassName={() => "group hover:bg-slate-50/80 transition-colors duration-200"}
         columns={dataTableColumns}
         rowKey={(item) => item._id}
         dataSource={dataSource}

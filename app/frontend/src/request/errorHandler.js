@@ -54,6 +54,15 @@ const errorHandler = (error) => {
 
     const errorText = message || codeMessage[response.status];
     const { status, error } = response;
+    
+    // Safety net for standard 401/403 unauthorized accesses
+    if (status === 401 || status === 403) {
+      window.localStorage.removeItem('auth');
+      window.localStorage.removeItem('isLogout');
+      window.location.href = '/logout';
+      return { success: false, message: 'Unauthorized' };
+    }
+
     notification.config({
       duration: 20,
       maxCount: 2,

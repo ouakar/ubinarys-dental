@@ -1,4 +1,5 @@
 import './style/app.css';
+import './style/tailwind.css';
 
 import { Suspense, lazy } from 'react';
 import { BrowserRouter } from 'react-router-dom';
