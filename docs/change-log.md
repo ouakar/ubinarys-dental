@@ -1,5 +1,29 @@
 # Change Log
 
+## Date: 2026-04-10
+
+### Phase 15: Security & Platform Hardening (JWT Rotation & Clinical Autosave)
+Implemented critical session management and data safety features to ensure production stability.
+
+**Backend Changes:**
+- **JWT Refresh Rotation**: Updated `refresh.js` and `authUser.js` to issue rolling refresh tokens. Consumed tokens are now atomically invalidated from `loggedSessions` to prevent replay attacks.
+- **Session Pruning**: Implemented `$slice: -50` on the session array to prevent unbounded document growth.
+- **Clinical Note Autosave Scoping**: Upgraded `Client.js` schema to use a `Mixed` type map for `draftClinicalNotes`. Drafts are now keyed by `adminId` to prevent concurrency conflicts between multiple dentists.
+- **Generic Draft Cleanup**: Unified the CRUD `update.js` controller to automatically purge all drafts for an entity once the primary record is officially finalized/submitted.
+
+**Frontend Changes:**
+- **Refresh Interceptor**: Implemented a global Axios interceptor in `request.js` with a concurrent request queue. Seamlessly handles silent 401 recovery without data loss.
+- **Autosave Component**: Replaced standard text areas with `<AutosaveTextArea />`, providing debounced, per-user draft recovery with a "⚠️ Draft restored" UI warning for transparency.
+
+### Phase 16: Modern Branding Finalization
+Unified the platform identity using modern, high-resolution assets throughout the UI and documentation.
+- **Asset Migration**: Replaced legacy SVGs with `logo.png` (compact icon) and `logo-with-text.png` (branding header).
+- **Core Update**: Refreshed `index.html` favicon, `Sidebar` navigation, and `AuthModule` login screens.
+- **Documentation Sync**: Updated all `README.md` files and internal reports to reflect the final 2026 branding.
+- **Cleanup**: Deleted 8 redundant/legacy SVG assets from the codebase.
+
+---
+
 ## Date: 2026-03-25
 
 ### Phase 1: Frontend Terminology Update (Customer/Client -> Patient)

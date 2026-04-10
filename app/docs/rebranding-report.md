@@ -46,3 +46,8 @@ Verified with `grep -ri "idurar" .`:
 - Applied `sed` with case preservation (IDURAR -> UBINARYS, idurar -> ubinarys).
 - Verified `frontend/index.html` renders correct metadata.
 - App still starts normally with rebranded console logs.
+
+## 2026-04-10: Branding Finalization
+- **Transition to High-Res Assets**: Replaced all legacy SVGs (`ubinarys-dental.svg`, `logo-icon.svg`, `logo-text.svg`) with modern PNG derivatives (`logo.png`, `logo-with-text.png`) to ensure visual consistency across all display densities.
+- **Single Source of Truth**: Unified all branding imports across Sidebar, Auth screens, and Favicon.
+- **Cleanup**: Deleted all unused `.svg` and legacy rebranding assets from the source tree.

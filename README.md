@@ -1,7 +1,7 @@
 # Ubinarys Dental Cloud SaaS
 
 <p align="center">
-  <img src="app/frontend/src/style/images/logo-icon.svg" alt="Ubinarys Logo" width="80"/>
+  <img src="app/frontend/src/style/images/logo-with-text.png" alt="Ubinarys Logo" width="300"/>
 </p>
 
 <p align="center">
