@@ -24,27 +24,30 @@ export const fields = {
     render: (value, record) => {
       const email = record?.email;
       const phone = record?.phone;
+      const name = record?.name || value;
       return (
-        <div className="flex items-center gap-4 py-2">
-          <Avatar className="h-10 w-10 border border-slate-200 shadow-sm">
-            <AvatarFallback className="bg-slate-50 text-slate-700 font-semibold">{getInitials(value)}</AvatarFallback>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 0' }}>
+          <Avatar 
+            size={48} 
+            className="border border-slate-200 shadow-sm"
+            style={{ backgroundColor: '#f0f2f5', color: '#1d39c4', fontWeight: 'bold', flexShrink: 0 }}
+          >
+            {getInitials(name)}
           </Avatar>
-          <div className="flex flex-col min-w-0">
-            <span className="truncate text-sm font-medium text-slate-900">{value}</span>
-            <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
-              {phone && (
-                <span className="flex items-center gap-1 truncate">
-                  <PhoneOutlined className="text-[10px]" />
-                  {phone}
-                </span>
-              )}
-              {email && (
-                <span className="flex items-center gap-1 truncate">
-                  <MailOutlined className="text-[10px]" />
-                  {email}
-                </span>
-              )}
-            </div>
+          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, gap: '4px' }}>
+            <span style={{ fontWeight: '600', fontSize: '14px', color: '#111827', display: 'block' }}>
+              {name}
+            </span>
+            {phone && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: '#6b7280' }}>
+                <PhoneOutlined style={{ fontSize: '13px' }} /> {phone}
+              </span>
+            )}
+            {email && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: '#6b7280' }}>
+                <MailOutlined style={{ fontSize: '13px' }} /> {email}
+              </span>
+            )}
           </div>
         </div>
       );
@@ -94,6 +97,7 @@ export const fields = {
   lastVisit: {
     type: 'custom',
     label: 'Dernière visite',
+    disableForForm: true,
     render: (value) => {
       const d = formatDate(value);
       return d !== '—' ? (
@@ -106,6 +110,7 @@ export const fields = {
   nextAppointment: {
     type: 'custom',
     label: 'Prochain RDV',
+    disableForForm: true,
     render: (value) => {
       const d = formatDate(value);
       return d !== '—' ? (

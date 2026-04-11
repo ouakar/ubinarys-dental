@@ -21,7 +21,8 @@ const DefaultApp = () => (
 );
 
 export default function UbinarysOs() {
-  const { isLoggedIn } = useSelector(selectAuth);
+  const auth = useSelector(selectAuth);
+  const isLoggedIn = auth?.isLoggedIn;
 
   console.log(
     '🚀 Welcome to Ubinarys! Did you know that we also offer commercial customization services? Contact us at hello@ubinarysapp.com for more information.'

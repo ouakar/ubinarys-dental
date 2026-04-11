@@ -45,10 +45,10 @@ export default function CalendarView() {
         if (appt.status === 'booked') type = 'warning';
         if (appt.status === 'no-show') type = 'error';
         if (appt.status === 'in-chair') type = 'processing';
-        
+        const patientName = appt.patient?.name || appt.reason || 'Unassigned/Unknown';
         listData.push({
           type,
-          content: `${parsedDate.format('HH:mm')} - ${appt.patient?.name || 'Unknown'}`,
+          content: `${parsedDate.format('HH:mm')} - ${patientName}`,
         });
       }
     });

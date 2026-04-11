@@ -162,6 +162,14 @@ const fr_fr = {
   // ─── Page Titles ──────────────────────────────────────────────────────────
   "Today's Dashboard (Reception)": 'Tableau du jour — Réception',
   'Tableau du jour': 'Tableau du jour — Réception',
+  'Volume Trends': 'Tendances du Volume',
+  'Tendances du volume': 'Tendances du Volume',
+  'Routine': 'Routine',
+  'Emergency': 'Urgence',
+  'Tendances': 'Tendances',
+  'Appointments Overview': 'Aperçu des rendez-vous',
+  "Today's patient schedule and quick actions": 'Planning des patients d\'aujourd\'hui',
+  'Routine vs Emergency (Last 7 Days)': 'Routine vs Urgence (7 derniers jours)',
 
   // ─── Proforma / Quote ─────────────────────────────────────────────────────
   'proforma invoice': 'Devis',

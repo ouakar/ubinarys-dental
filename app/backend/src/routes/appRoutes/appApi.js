@@ -32,6 +32,7 @@ const routerApp = (entity, controller) => {
   
   if (entity === 'appointment') {
     router.route(`/${entity}/today`).get(catchErrors(controller['today']));
+    router.route(`/${entity}/trends`).get(catchErrors(controller['trends']));
   }
 };
 

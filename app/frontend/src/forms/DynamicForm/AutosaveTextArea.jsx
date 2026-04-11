@@ -3,6 +3,8 @@ import { Input, Typography, Space } from 'antd';
 import { request } from '@/request';
 import { useParams } from 'react-router-dom';
 import storePersist from '@/redux/storePersist';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config/serverApiConfig';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -12,6 +14,7 @@ export default function AutosaveTextArea({ value, onChange, entity, fieldName })
   const [status, setStatus] = useState('');
   const [hasRestored, setHasRestored] = useState(false);
   const timeoutRef = useRef(null);
+  const reqSeqRef = useRef(0);
   
   // Obtain current admin context for per-user draft isolation
   const auth = storePersist.get('auth');
@@ -55,20 +58,30 @@ export default function AutosaveTextArea({ value, onChange, entity, fieldName })
           // Dot notation natively updates mapping without overwriting other users' drafts
           payload[`${draftPropName}.${adminId}`] = val; 
 
-          const res = await request.update({ 
-            entity, 
-            id, 
-            jsonData: payload 
+          reqSeqRef.current += 1;
+          const currentReqSeq = reqSeqRef.current;
+
+          const auth = storePersist.get('auth');
+          const token = auth?.current?.token;
+          
+          const res = await axios.patch(API_BASE_URL + entity + '/update/' + id, payload, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
           });
 
-          if (res.success) {
-            setStatus('Saved');
-            setTimeout(() => setStatus(''), 3000);
-          } else {
-            setStatus('Failed');
+          if (currentReqSeq === reqSeqRef.current) {
+             if (res.data.success) {
+               setStatus('Saved');
+               setTimeout(() => {
+                 if (currentReqSeq === reqSeqRef.current) setStatus('');
+               }, 3000);
+             } else {
+               setStatus('Failed');
+             }
           }
         } catch (error) {
-          setStatus('Failed');
+           setStatus('Failed');
         }
       }, 1500);
     }

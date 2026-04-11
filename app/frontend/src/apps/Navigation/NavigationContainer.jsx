@@ -203,6 +203,7 @@ function Sidebar({ collapsible, isMobile = false }) {
       >
         <img 
           src={company_logo ? `${FILE_BASE_URL}${company_logo}?t=${Date.now()}` : logoIcon} 
+          onError={(e) => { e.target.onerror = null; e.target.src = logoIcon; }}
           alt="Logo" 
           style={{ marginLeft: '-5px', height: '40px', maxWidth: '40px', objectFit: 'contain' }} 
         />

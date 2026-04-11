@@ -37,9 +37,9 @@ export default function ReadItem({ config }) {
 
   const show = isReadBoxOpen ? { display: 'block', opacity: 1 } : { display: 'none', opacity: 0 };
 
-  const itemsList = listState.map((item) => {
+  const itemsList = listState.map((item, index) => {
     return (
-      <Row key={item.propsKey} gutter={12}>
+      <Row key={`${item.propsKey}-${index}`} gutter={12}>
         <Col className="gutter-row" span={8}>
           <p>{item.label}</p>
         </Col>
@@ -47,7 +47,11 @@ export default function ReadItem({ config }) {
           <p> : </p>
         </Col>
         <Col className="gutter-row" span={14}>
-          <p>{item.value}</p>
+          <span style={{ whiteSpace: 'pre-wrap', display: 'block', wordBreak: 'break-word' }}>
+            {typeof item.value === 'object' && item.value !== null 
+              ? JSON.stringify(item.value) 
+              : String(item.value ?? '')}
+          </span>
         </Col>
       </Row>
     );

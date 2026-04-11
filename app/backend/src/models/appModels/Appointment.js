@@ -13,20 +13,24 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Client',
     autopopulate: true,
+    required: true,
   },
   dentist: {
     type: mongoose.Schema.ObjectId,
     ref: 'Admin',
     autopopulate: true,
+    required: true,
   },
   clinic: {
     type: String,
   },
   startTime: {
     type: Date,
+    required: true,
   },
   endTime: {
     type: Date,
+    required: true,
   },
   status: {
     type: String,

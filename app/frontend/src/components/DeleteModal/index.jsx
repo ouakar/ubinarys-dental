@@ -33,7 +33,7 @@ export default function DeleteModal({ config }) {
       console.log('🚀 ~ useEffect ~ DeleteModal isSuccess:', isSuccess);
       modal.close();
       dispatch(crud.list({ entity }));
-      // dispatch(crud.resetAction({actionType:"delete"})); // check here maybe it wrong
+      dispatch(crud.resetAction({ actionType: 'delete' }));
     }
     if (current) {
       let labels = deleteModalLabels.map((x) => valueByString(current, x)).join(' ');
@@ -45,10 +45,6 @@ export default function DeleteModal({ config }) {
   const handleOk = () => {
     const id = current._id;
     dispatch(crud.delete({ entity, id }));
-    readBox.close();
-    modal.close();
-    panel.close();
-    navMenu.collapse();
   };
   const handleCancel = () => {
     if (!isLoading) modal.close();

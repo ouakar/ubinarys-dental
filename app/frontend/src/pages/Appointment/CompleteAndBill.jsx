@@ -61,7 +61,7 @@ export default function CompleteAndBill({ record }) {
     if (!treatment) return null;
 
     const qty = item.quantity || 1;
-    const price = treatment.defaultPriceMAD || 0;
+    const price = treatment.price || treatment.defaultPriceMAD || 0;
     const vatRate = treatment.defaultVAT || 0;
 
     const lineHT = calculate.multiply(qty, price);
@@ -158,7 +158,7 @@ export default function CompleteAndBill({ record }) {
                 >
                   {treatmentsList.map(t => (
                     <Select.Option key={t._id} value={t._id}>
-                      {t.code ? `[${t.code}] ` : ''}{t.name} ({formatMAD(t.defaultPriceMAD || 0)})
+                      {t.code ? `[${t.code}] ` : ''}{t.name} ({formatMAD(t.price || t.defaultPriceMAD || 0)})
                     </Select.Option>
                   ))}
                 </Select>

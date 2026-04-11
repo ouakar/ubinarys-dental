@@ -43,6 +43,15 @@ export function valueByString(obj, string, devider) {
   if (devider === undefined) {
     devider = '|';
   }
+  if (!string) {
+    return '';
+  }
+  if (Array.isArray(string)) {
+    return string.reduce((o, x) => (o === undefined || o === null ? undefined : o[x]), obj) || '';
+  }
+  if (typeof string !== 'string') {
+    return String(string);
+  }
   return string
     .split(devider)
     .map(function (key) {

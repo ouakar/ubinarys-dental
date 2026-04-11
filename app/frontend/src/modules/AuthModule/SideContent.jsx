@@ -1,6 +1,7 @@
-import logo from '@/style/images/logo-with-text.png';
+import logo from '@/style/images/logo.png';
 import useLanguage from '@/locale/useLanguage';
 
+import { Layout, Typography } from 'antd';
 const { Content } = Layout;
 const { Title, Text } = Typography;
 

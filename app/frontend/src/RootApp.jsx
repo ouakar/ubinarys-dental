@@ -9,7 +9,7 @@ import PageLoader from '@/components/PageLoader';
 
 const UbinarysOs = lazy(() => import('./apps/UbinarysOs'));
 
-export default function RoutApp() {
+export default function RootApp() {
   return (
     <BrowserRouter>
       <Provider store={store}>

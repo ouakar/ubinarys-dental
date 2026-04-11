@@ -105,7 +105,7 @@ export default function UpdateForm({ config, formElements, withUpload = false })
               paddingRight: '5px',
             }}
           >
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={isLoading}>
               {translate('Save')}
             </Button>
           </Form.Item>

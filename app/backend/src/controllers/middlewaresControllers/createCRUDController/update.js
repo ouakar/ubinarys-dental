@@ -6,6 +6,12 @@ const update = async (Model, req, res) => {
   if (req.body.clinicalNotes !== undefined && req.body.draftClinicalNotes === undefined) {
     req.body.draftClinicalNotes = {};
   }
+  // Remove protected fields from mass assignment
+  delete req.body.createdBy;
+  delete req.body.created;
+  delete req.body.removed;
+  delete req.body._id;
+
   const result = await Model.findOneAndUpdate(
     {
       _id: req.params.id,

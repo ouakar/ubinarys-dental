@@ -36,6 +36,11 @@ const update = async (req, res) => {
     }
   }
 
+  delete updates.removed;
+  delete updates.createdBy;
+  delete updates.created;
+  delete updates._id;
+
   const result = await Model.findOneAndUpdate(
     { _id: id, removed: false },
     updates,

@@ -5,7 +5,7 @@ import { Layout, Col, Divider, Typography } from 'antd';
 import AuthLayout from '@/layout/AuthLayout';
 import SideContent from './SideContent';
 
-import logo from '@/style/images/logo-with-text.png';
+import logo from '@/style/images/logo.png';
 
 const { Content } = Layout;
 const { Title } = Typography;

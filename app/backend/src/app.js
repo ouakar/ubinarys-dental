@@ -29,7 +29,8 @@ app.use(
 );
 
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable CSP if it breaks frontend locally, or configure properly
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: false,
 }));
 
 app.use(mongoSanitize());
@@ -39,7 +40,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  max: 10000, // Increased from 100 to prevent 429 Too Many Requests errors locally
   standardHeaders: true,
   legacyHeaders: false,
 });
