@@ -53,7 +53,7 @@ const paginatedList = async (req, res) => {
       success: true,
       result,
       pagination,
-      message: 'Successfully found all documents',
+      message: 'Documents trouvés avec succès',
     });
   } else {
     return res.status(203).json({

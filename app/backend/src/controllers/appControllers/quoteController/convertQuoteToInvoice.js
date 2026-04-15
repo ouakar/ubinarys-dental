@@ -13,7 +13,7 @@ const convertQuoteToInvoice = async (req, res) => {
     return res.status(404).json({
       success: false,
       result: null,
-      message: 'Quote not found',
+      message: 'Devis non trouvé',
     });
   }
 
@@ -21,7 +21,7 @@ const convertQuoteToInvoice = async (req, res) => {
     return res.status(409).json({
       success: false,
       result: null,
-      message: 'This quote has already been converted to an invoice.',
+      message: 'Ce devis a déjà été converti en facture.',
     });
   }
 
@@ -70,7 +70,7 @@ const convertQuoteToInvoice = async (req, res) => {
   return res.status(200).json({
     success: true,
     result: updatedInvoice,
-    message: 'Quote successfully converted to Invoice',
+    message: 'Devis converti en facture avec succès',
   });
 };
 

@@ -3,9 +3,11 @@ import { Badge, Calendar } from 'antd';
 import { request } from '@/request';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import useLanguage from '@/locale/useLanguage';
 
 dayjs.extend(customParseFormat);
 export default function CalendarView() {
+  const translate = useLanguage();
   const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export default function CalendarView() {
         if (appt.status === 'booked') type = 'warning';
         if (appt.status === 'no-show') type = 'error';
         if (appt.status === 'in-chair') type = 'processing';
-        const patientName = appt.patient?.name || appt.reason || 'Unassigned/Unknown';
+        const patientName = appt.patient?.name || appt.reason || translate('Unassigned/Unknown');
         listData.push({
           type,
           content: `${parsedDate.format('HH:mm')} - ${patientName}`,

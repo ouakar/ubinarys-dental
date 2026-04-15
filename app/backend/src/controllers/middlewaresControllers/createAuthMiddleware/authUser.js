@@ -8,7 +8,7 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
     return res.status(403).json({
       success: false,
       result: null,
-      message: 'Invalid credentials.',
+      message: 'Identifiants invalides.',
     });
 
   if (isMatch === true) {
@@ -43,13 +43,13 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
         refreshToken: refreshToken,
         maxAge: req.body.remember ? 365 : null,
       },
-      message: 'Successfully login user',
+      message: 'Connexion réussie',
     });
   } else {
     return res.status(403).json({
       success: false,
       result: null,
-      message: 'Invalid credentials.',
+      message: 'Identifiants invalides.',
     });
   }
 };

@@ -23,7 +23,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: true,
+    origin: process.env.FRONTEND_URL || true,
     credentials: true,
   })
 );
@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: 10000, // Increased from 100 to prevent 429 Too Many Requests errors locally
+  max: 2000, // Reduced from 10000 for better production safety
   standardHeaders: true,
   legacyHeaders: false,
 });

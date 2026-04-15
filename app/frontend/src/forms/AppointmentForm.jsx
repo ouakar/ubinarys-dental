@@ -13,6 +13,7 @@ export default function AppointmentForm({ isUpdateForm = false }) {
         <Form.Item
           name="patient"
           label={translate('Patient')}
+          rules={[{ required: true, message: translate('Please select a patient') }]}
         >
           <AutoCompleteAsync
             entity={'client'}
@@ -29,6 +30,7 @@ export default function AppointmentForm({ isUpdateForm = false }) {
         <Form.Item
           name="dentist"
           label={translate('Dentist')}
+          rules={[{ required: true, message: translate('Please select a dentist') }]}
         >
           <SelectAsync
             entity={'admin'}
@@ -42,6 +44,7 @@ export default function AppointmentForm({ isUpdateForm = false }) {
         <Form.Item
           name="startTime"
           label={translate('Start Time')}
+          rules={[{ required: true, message: translate('Please select start time') }]}
         >
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />
         </Form.Item>
@@ -51,6 +54,7 @@ export default function AppointmentForm({ isUpdateForm = false }) {
         <Form.Item
           name="endTime"
           label={translate('End Time')}
+          rules={[{ required: true, message: translate('Please select end time') }]}
         >
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />
         </Form.Item>

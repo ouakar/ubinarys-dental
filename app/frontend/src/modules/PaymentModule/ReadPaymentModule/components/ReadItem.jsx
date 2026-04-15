@@ -23,6 +23,7 @@ import { useMoney } from '@/settings';
 
 import useMail from '@/hooks/useMail';
 import { useNavigate } from 'react-router-dom';
+import { tagColor } from '@/utils/statusTagColor';
 
 export default function ReadItem({ config, selectedItem }) {
   const translate = useLanguage();
@@ -78,7 +79,13 @@ export default function ReadItem({ config, selectedItem }) {
         }}
         title={`${ENTITY_NAME} # ${currentErp.number}/${currentErp.year || ''}`}
         ghost={false}
-        tags={<span>{currentErp.paymentStatus}</span>}
+        tags={[
+          currentErp.paymentStatus && (
+            <Tag key="paymentStatus" color={tagColor(currentErp.paymentStatus)}>
+              {translate(currentErp.paymentStatus)}
+            </Tag>
+          ),
+        ]}
         extra={[
           <Button
             key={`${uniqueId()}`}
@@ -165,10 +172,10 @@ export default function ReadItem({ config, selectedItem }) {
         </Row>
       </PageHeader>
       <Divider dashed />
-      <Descriptions title={`${translate('Patient')} : ${currentErp.client.name}`}>
-        <Descriptions.Item label={translate('Address')}>{client.address}</Descriptions.Item>
-        <Descriptions.Item label={translate('email')}>{client.email}</Descriptions.Item>
-        <Descriptions.Item label={translate('Phone')}>{client.phone}</Descriptions.Item>
+      <Descriptions title={`${translate('Patient')} : ${currentErp.client?.name || '—'}`}>
+        <Descriptions.Item label={translate('Address')}>{client?.address || '—'}</Descriptions.Item>
+        <Descriptions.Item label={translate('email')}>{client?.email || '—'}</Descriptions.Item>
+        <Descriptions.Item label={translate('Phone')}>{client?.phone || '—'}</Descriptions.Item>
       </Descriptions>
       <Divider />
       <Row>

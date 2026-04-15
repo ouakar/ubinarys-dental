@@ -17,7 +17,7 @@ import { CloseCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { settingsAction } from '@/redux/settings/actions';
-// import { StatusTag } from '@/components/Tag';
+import { tagColor } from '@/utils/statusTagColor';
 
 function SaveForm({ form, translate }) {
   const handelClick = () => {
@@ -142,11 +142,15 @@ export default function UpdateItem({ config, UpdateForm }) {
         title={translate('update')}
         ghost={false}
         tags={[
-          <span key="status">{currentErp.status && translate(currentErp.status)}</span>,
+          currentErp.status && (
+            <Tag key="status" color={tagColor(currentErp.status)}>
+              {translate(currentErp.status)}
+            </Tag>
+          ),
           currentErp.paymentStatus && (
-            <span key="paymentStatus">
-              {currentErp.paymentStatus && translate(currentErp.paymentStatus)}
-            </span>
+            <Tag key="paymentStatus" color={tagColor(currentErp.paymentStatus)}>
+              {translate(currentErp.paymentStatus)}
+            </Tag>
           ),
         ]}
         extra={[

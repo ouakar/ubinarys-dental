@@ -59,7 +59,7 @@ export const fields = [
     ),
   },
   {
-    title: 'Traitement',
+    title: 'Soin',
     dataIndex: ['treatment', 'name'],
     render: (text) => text || '—',
   },

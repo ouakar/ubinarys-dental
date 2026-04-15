@@ -18,7 +18,7 @@ const getInitials = (name) => {
 export const fields = {
   identity: {
     type: 'custom',
-    label: 'Patient Information',
+    label: 'Informations du Patient',
     dataIndex: 'name',
     disableForForm: true,
     render: (value, record) => {

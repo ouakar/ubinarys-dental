@@ -473,6 +473,36 @@ const lang = {
   'You can upload a clinic logo, or simply use your clinic name without a logo.': 'You can upload a clinic logo, or simply use your clinic name without a logo.',
   'You can only upload JPG/PNG file!': 'You can only upload JPG/PNG file!',
   'Image must be smaller than 2MB!': 'Image must be smaller than 2MB!',
+  // ─── New Dental Specific UI ───────────────────────────────────────────────
+  'Complete Appointment & Generate Invoice': 'Complete Appointment & Generate Invoice',
+  'Generate Invoice': 'Generate Invoice',
+  'Select treatments performed during this session:': 'Select treatments performed during this session:',
+  'Select Treatment': 'Select Treatment',
+  'Add another treatment': 'Add another treatment',
+  Qty: 'Qty',
+  'Subtotal (H.T):': 'Subtotal (H.T):',
+  'VAT:': 'VAT:',
+  'Total TTC:': 'Total TTC:',
+
+  // ─── Notifications & Messages ─────────────────────────────────────────────
+  'Please select at least one treatment': 'Please select at least one treatment',
+  'Invoice created successfully!': 'Invoice created successfully!',
+  'Error creating invoice': 'Error creating invoice',
+  'An unexpected error occurred': 'An unexpected error occurred',
+  'Double-booking detected: The dentist already has an appointment at this time.': 'Double-booking detected: The dentist already has an appointment at this time.',
+  'Appointment created successfully': 'Appointment created successfully',
+  'Unassigned/Unknown': 'Unassigned/Unknown',
+  'End': 'End',
+  'Mark In-Chair': 'Mark In-Chair',
+  'Mark Done': 'Mark Done',
+  'Mark No-Show': 'Mark No-Show',
+  'View Patient': 'View Patient',
+  'View Invoice': 'View Invoice',
+  'No data available': 'No data available',
+  'Error updating status': 'Error updating status',
+  'Status updated to': 'Status updated to',
+  'Routine': 'Routine',
+  'Emergency': 'Emergency',
 };
 
 export default lang;

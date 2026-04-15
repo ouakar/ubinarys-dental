@@ -14,7 +14,7 @@ const listAll = async (req, res) => {
     return res.status(200).json({
       success: true,
       result,
-      message: 'Successfully found all documents',
+      message: 'Documents trouvés avec succès',
     });
   } else {
     return res.status(203).json({

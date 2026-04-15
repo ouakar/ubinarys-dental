@@ -16,7 +16,7 @@ const mail = async (req, res) => {
     return res.status(404).json({
       success: false,
       result: null,
-      message: 'No document or client found',
+      message: 'Aucun document ou patient trouvé',
     });
   }
 
@@ -26,7 +26,7 @@ const mail = async (req, res) => {
     return res.status(400).json({
       success: false,
       result: null,
-      message: 'Client has no email address',
+      message: 'Le patient n\'a pas d\'adresse email',
     });
   }
 
@@ -44,9 +44,9 @@ const mail = async (req, res) => {
   const html = `
     ${logoHtml}
     <h2>${clinicName}</h2>
-    <p>Hello ${result.client.name},</p>
-    <p>Please find attached your quote.</p>
-    <p>Best regards,</p>
+    <p>Bonjour ${result.client.name},</p>
+    <p>Veuillez trouver ci-joint votre devis.</p>
+    <p>Cordialement,</p>
   `;
 
   try {
@@ -76,7 +76,7 @@ const mail = async (req, res) => {
     return res.status(200).json({
       success: true,
       result: null,
-      message: 'Email sent successfully / Email envoyé avec succès',
+      message: 'Email envoyé avec succès',
     });
   } catch (error) {
     return res.status(500).json({

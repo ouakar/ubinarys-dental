@@ -17,7 +17,7 @@ const create = async (req, res) => {
     if (overlap) {
       return res.status(400).json({
         success: false,
-        message: 'Double-booking detected: The dentist already has an appointment at this time.',
+        message: 'Doublon détecté : Le dentiste a déjà un rendez-vous à cette heure.',
       });
     }
   }
@@ -29,7 +29,7 @@ const create = async (req, res) => {
   return res.status(200).json({
     success: true,
     result,
-    message: 'Appointment created successfully',
+    message: 'Rendez-vous créé avec succès',
   });
 };
 

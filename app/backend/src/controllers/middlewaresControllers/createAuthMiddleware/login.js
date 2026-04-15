@@ -23,7 +23,7 @@ const login = async (req, res, { userModel }) => {
       success: false,
       result: null,
       error: error,
-      message: 'Invalid/Missing credentials.',
+      message: 'Identifiants invalides ou manquants.',
       errorMessage: error.message,
     });
   }
@@ -35,7 +35,7 @@ const login = async (req, res, { userModel }) => {
     return res.status(404).json({
       success: false,
       result: null,
-      message: 'No account with this email has been registered.',
+      message: 'Aucun compte n\'est enregistré avec cet email.',
     });
 
   const databasePassword = await UserPasswordModel.findOne({ user: user._id, removed: false });
@@ -44,7 +44,7 @@ const login = async (req, res, { userModel }) => {
     return res.status(409).json({
       success: false,
       result: null,
-      message: 'Your account is disabled, contact your account adminstrator',
+      message: 'Votre compte est désactivé, contactez votre administrateur.',
     });
 
   //  authUser if your has correct password

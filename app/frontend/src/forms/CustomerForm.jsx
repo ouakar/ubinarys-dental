@@ -19,9 +19,8 @@ export default function CustomerForm({ isUpdateForm = false }) {
         label={translate('Patient Full Name')}
         name="name"
         rules={[
-          {
-            validator: validateEmptyString,
-          },
+          { required: true, message: translate('Please enter the patient name') },
+          { validator: validateEmptyString },
         ]}
       >
         <Input />
@@ -31,13 +30,8 @@ export default function CustomerForm({ isUpdateForm = false }) {
         name="phone"
         label={translate('Phone')}
         rules={[
-          {
-            validator: validateEmptyString,
-          },
-          {
-            pattern: validatePhoneNumber,
-            message: 'Please enter a valid phone number',
-          },
+          { required: true, message: translate('Please enter a phone number') },
+          { pattern: validatePhoneNumber, message: translate('Please enter a valid phone number') },
         ]}
       >
         <Input />
@@ -46,12 +40,7 @@ export default function CustomerForm({ isUpdateForm = false }) {
         name="email"
         label={translate('email')}
         rules={[
-          {
-            type: 'email',
-          },
-          {
-            validator: validateEmptyString,
-          },
+          { type: 'email', message: translate('Please enter a valid email') },
         ]}
       >
         <Input />

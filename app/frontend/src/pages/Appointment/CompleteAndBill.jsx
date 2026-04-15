@@ -85,7 +85,7 @@ export default function CompleteAndBill({ record }) {
 
   const handleSubmit = async () => {
     if (payloadItems.length === 0) {
-      return message.error('Please select at least one treatment');
+      return message.error(translate('Please select at least one treatment'));
     }
     setLoading(true);
 
@@ -103,16 +103,16 @@ export default function CompleteAndBill({ record }) {
       const res = await request.create({ entity: 'invoice/create-from-appointment', jsonData: payload });
 
       if (res.success) {
-        message.success('Invoice created successfully!');
+        message.success(translate('Invoice created successfully!'));
         setIsModalVisible(false);
         // Force navigate to invoice read page
         navigate(`/invoice/read/${res.result._id}`);
       } else {
-        message.error(res.message || 'Error creating invoice');
+        message.error(res.message || translate('Error creating invoice'));
       }
     } catch (err) {
       console.error(err);
-      message.error('An unexpected error occurred');
+      message.error(translate('An unexpected error occurred'));
     } finally {
       setLoading(false);
     }
@@ -126,7 +126,7 @@ export default function CompleteAndBill({ record }) {
         onClick={showModal}
         style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
       >
-        Complete & Bill
+        {translate('Complete & Bill')}
       </Button>
 
       <Modal
@@ -168,7 +168,7 @@ export default function CompleteAndBill({ record }) {
                   min={1} 
                   value={item.quantity} 
                   onChange={(val) => handleChangeQty(val, index)} 
-                  addonBefore="Qty"
+                  addonBefore={translate('Qty')}
                   style={{ width: '100%' }} 
                 />
               </Col>
@@ -185,15 +185,15 @@ export default function CompleteAndBill({ record }) {
           <Row justify="end">
             <Col span={10}>
               <Row>
-                <Col span={12}><Text type="secondary">Subtotal (H.T):</Text></Col>
+                <Col span={12}><Text type="secondary">{translate('Subtotal (H.T):')}</Text></Col>
                 <Col span={12} style={{ textAlign: 'right' }}><Text>{formatMAD(subTotalHT)}</Text></Col>
               </Row>
               <Row>
-                <Col span={12}><Text type="secondary">VAT:</Text></Col>
+                <Col span={12}><Text type="secondary">{translate('VAT:')}</Text></Col>
                 <Col span={12} style={{ textAlign: 'right' }}><Text>{formatMAD(vatTotal)}</Text></Col>
               </Row>
               <Row style={{ marginTop: '8px' }}>
-                <Col span={12}><Text strong>Total TTC:</Text></Col>
+                <Col span={12}><Text strong>{translate('Total TTC:')}</Text></Col>
                 <Col span={12} style={{ textAlign: 'right' }}><Text strong>{formatMAD(totalTTC)}</Text></Col>
               </Row>
             </Col>

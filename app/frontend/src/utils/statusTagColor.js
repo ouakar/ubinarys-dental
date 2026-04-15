@@ -1,11 +1,11 @@
 const colors = [
-  { value: 'default', label: 'default', icon: '🌟' },
-  { value: 'draft', label: 'draft', icon: '📝' },
+  { value: 'default', label: 'default', color: 'blue', icon: '🌟' },
+  { value: 'draft', label: 'draft', color: 'default', icon: '📝' },
   { value: 'pending', label: 'pending', color: 'magenta', icon: '⏳' },
   { value: 'cancelled', label: 'cancelled', color: 'volcano', icon: '❌' },
   { value: 'sent', label: 'sent', color: 'gold', icon: '✉️' },
   { value: 'refunded', label: 'refunded', color: 'purple', icon: '💰' },
-  { value: 'on hold', label: 'On hold', color: 'blue', icon: '🛑' },
+  { value: 'on hold', label: 'On hold', color: 'cyan', icon: '🛑' },
 
   { value: 'accepted', label: 'accepted', color: 'green', icon: '✅' },
   { value: 'declined', label: 'declined', color: 'volcano', icon: '❎' },
@@ -27,7 +27,7 @@ const colors = [
   { value: 'packing', label: 'packing', color: 'orange', icon: '📦' },
   { value: 'shipped', label: 'shipped', color: 'purple', icon: '✈️' },
 
-  { value: 'not started', label: 'not started', icon: '🚫' },
+  { value: 'not started', label: 'not started', color: 'default', icon: '🚫' },
   { value: 'in progress', label: 'in progress', color: 'geekblue', icon: '🔄' },
   { value: 'delayed', label: 'delayed', color: 'orange', icon: '⏰' },
   { value: 'completed', label: 'completed', color: 'green', icon: '✅' },
@@ -52,8 +52,7 @@ const statusTagColorList = (tags = []) => {
 
 const tagColor = (status) => {
   const element = colors.find((obj) => obj?.value?.toLowerCase() === status?.toLowerCase());
-  if (element) return element;
-  else return { value: status, label: status };
+  return element?.color || 'default';
 };
 
 export { statusTagColorList, tagColor };

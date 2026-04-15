@@ -16,16 +16,7 @@ const initialChartData = [];
 
 // Config remains static but labels will be handled via translate in the component if needed, 
 // or kept generic since ChartContainer handles mapping.
-const chartConfig = {
-  routine: {
-    label: "Routine",
-    color: "#1890ff",
-  },
-  emergency: {
-    label: "Emergency",
-    color: "#722ed1",
-  },
-};
+
 
 export default function ReceptionDashboard() {
   const translate = useLanguage();
@@ -33,6 +24,17 @@ export default function ReceptionDashboard() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [chartData, setChartData] = useState([]);
+
+  const chartConfig = {
+    routine: {
+      label: translate("Routine"),
+      color: "#1890ff",
+    },
+    emergency: {
+      label: translate("Emergency"),
+      color: "#722ed1",
+    },
+  };
 
   const fetchToday = async () => {
     setLoading(true);
@@ -68,11 +70,11 @@ export default function ReceptionDashboard() {
     try {
       const res = await request.update({ entity: 'appointment', id, jsonData: { status } });
       if (res.success) {
-        message.success(`Status updated to ${status}`);
+        message.success(`${translate('Status updated to')} ${translate(status)}`);
         fetchToday();
       }
     } catch (err) {
-      message.error(err.message || 'Error updating status');
+      message.error(err.message || translate('Error updating status'));
       setLoading(false);
     }
   };
@@ -133,6 +135,7 @@ export default function ReceptionDashboard() {
     {
       title: translate('Dentist'),
       dataIndex: ['dentist', 'name'],
+      render: (text) => text || '—',
     },
     {
       title: translate('Status'),
