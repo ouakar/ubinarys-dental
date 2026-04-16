@@ -24,7 +24,7 @@ export default ({ mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'http://192.168.100.196:8888/',
+          target: proxy_url,
           changeOrigin: true,
           secure: false,
         },

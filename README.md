@@ -42,23 +42,31 @@
 
 ## ⚙️ Local Setup
 
-### Prerequisites
+### Quick Start (Ubuntu/Linux)
+If you are on Ubuntu, you can use the automated setup script:
+```bash
+bash setup.sh
+```
+
+### Manual Setup
+
+#### 1. Prerequisites
 - Node.js 18+
 - MongoDB Atlas account (or local MongoDB 6)
 
-### 1. Clone the repo
+#### 2. Clone the repo
 ```bash
 git clone https://github.com/ouakar/ubinarys-dental.git
 cd ubinarys-dental
 ```
 
-### 2. Backend setup
+#### 3. Backend setup
 ```bash
 cd app/backend
 npm install
 ```
 
-Create `.variables.env` in `app/backend/`:
+Create `.env` in `app/backend/`:
 ```env
 DATABASE="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=ubinarys"
 JWT_SECRET="your-strong-random-secret"

@@ -24,7 +24,6 @@ export default function UbinarysOs() {
   const auth = useSelector(selectAuth);
   const isLoggedIn = auth?.isLoggedIn;
 
-  console.log(
     '🚀 Welcome to Ubinarys! Did you know that we also offer commercial customization services? Contact us at hello@ubinarysapp.com for more information.'
   );
 
@@ -36,7 +35,6 @@ export default function UbinarysOs() {
   //   const handleStatusChange = () => {
   //     setIsOnline(navigator.onLine);
   //     if (!isOnline) {
-  //       console.log('🚀 ~ useEffect ~ navigator.onLine:', navigator.onLine);
   //       notification.config({
   //         duration: 20,
   //         maxCount: 1,

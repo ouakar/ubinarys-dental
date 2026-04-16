@@ -15,7 +15,7 @@ exports.catchErrors = (fn) => {
           result: null,
           message: 'Required fields are not supplied',
           controller: fn.name,
-          error: error,
+          error: process.env.NODE_ENV === 'development' ? error : undefined,
         });
       } else {
         // Server Error
@@ -24,7 +24,7 @@ exports.catchErrors = (fn) => {
           result: null,
           message: error.message,
           controller: fn.name,
-          error: error,
+          error: process.env.NODE_ENV === 'development' ? error : undefined,
         });
       }
     });
