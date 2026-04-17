@@ -10,5 +10,4 @@ export default function UpgradeButton() {
   return null;
 }
 
-  '🚀 Welcome to Ubinarys! Did you know that we also offer commercial customization services? Contact us at hello@ubinarysapp.com for more information.'
-);
+

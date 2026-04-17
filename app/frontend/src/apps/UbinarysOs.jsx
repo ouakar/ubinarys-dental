@@ -24,8 +24,7 @@ export default function UbinarysOs() {
   const auth = useSelector(selectAuth);
   const isLoggedIn = auth?.isLoggedIn;
 
-    '🚀 Welcome to Ubinarys! Did you know that we also offer commercial customization services? Contact us at hello@ubinarysapp.com for more information.'
-  );
+
 
   // // Online state
   // const [isOnline, setIsOnline] = useState(navigator.onLine);
