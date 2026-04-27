@@ -17,7 +17,7 @@ const update = async (req, res) => {
     const checkEndTime = updates.endTime || existingObj.endTime;
     const checkStatus = updates.status || existingObj.status;
 
-    if (['booked', 'confirmed', 'in-chair'].includes(checkStatus)) {
+    if (checkDentist && ['booked', 'confirmed', 'in-chair'].includes(checkStatus)) {
       const overlap = await Model.findOne({
         _id: { $ne: id },
         dentist: checkDentist,

@@ -19,7 +19,6 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Admin',
     autopopulate: true,
-    required: true,
   },
   clinic: {
     type: String,

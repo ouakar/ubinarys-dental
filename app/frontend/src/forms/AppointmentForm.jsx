@@ -30,7 +30,6 @@ export default function AppointmentForm({ isUpdateForm = false }) {
         <Form.Item
           name="dentist"
           label={translate('Dentist')}
-          rules={[{ required: true, message: translate('Please select a dentist') }]}
         >
           <SelectAsync
             entity={'admin'}
