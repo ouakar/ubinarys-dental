@@ -21,6 +21,8 @@ export const fields = {
     label: 'Informations du Patient',
     dataIndex: 'name',
     disableForForm: true,
+    disableForUpdate: true,
+    disableForRead: true,
     render: (value, record) => {
       const email = record?.email;
       const phone = record?.phone;
@@ -61,6 +63,11 @@ export const fields = {
     type: 'phone',
     disableForTable: true,
   },
+  company_reg_number: {
+    type: 'string',
+    label: 'I.C.E',
+    disableForTable: true,
+  },
   email: {
     type: 'email',
     disableForTable: true,
@@ -98,6 +105,8 @@ export const fields = {
     type: 'custom',
     label: 'Dernière visite',
     disableForForm: true,
+    disableForUpdate: true,
+    disableForRead: true,
     render: (value) => {
       const d = formatDate(value);
       return d !== '—' ? (
@@ -111,6 +120,8 @@ export const fields = {
     type: 'custom',
     label: 'Prochain RDV',
     disableForForm: true,
+    disableForUpdate: true,
+    disableForRead: true,
     render: (value) => {
       const d = formatDate(value);
       return d !== '—' ? (

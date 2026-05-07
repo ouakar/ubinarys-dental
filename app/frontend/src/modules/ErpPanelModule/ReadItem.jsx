@@ -157,10 +157,13 @@ export default function ReadItem({ config, selectedItem }) {
           <Button
             key={`${uniqueId()}`}
             onClick={() => {
-              window.open(
-                `${DOWNLOAD_BASE_URL}${entity}/${entity}-${currentErp._id}.pdf`,
-                '_blank'
-              );
+              const url = `${DOWNLOAD_BASE_URL}${entity}/${entity}-${currentErp._id}.pdf`;
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${entity}-${currentErp.number}.pdf`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
             }}
             icon={<FilePdfOutlined />}
           >

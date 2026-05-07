@@ -43,6 +43,7 @@ const schema = new mongoose.Schema({
   zipCode: String,
   condition: String,
   note: String,
+  company_reg_number: String,
   
   // Dental / Patient specific extensions
   medicalHistory: String,

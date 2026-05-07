@@ -10,11 +10,13 @@ export const dataForRead = ({ fields, translate }) => {
 
   Object.keys(fields).forEach((key) => {
     let field = fields[key];
-    columns.push({
-      title: field.title || field.label || translate(key),
-      dataIndex: Array.isArray(field.dataIndex) ? field.dataIndex.join('.') : field.dataIndex || key,
-      isDate: field.type === 'date',
-    });
+    if (!field.disableForRead) {
+      columns.push({
+        title: translate(field.title || field.label || key),
+        dataIndex: Array.isArray(field.dataIndex) ? field.dataIndex.join('.') : field.dataIndex || key,
+        isDate: field.type === 'date',
+      });
+    }
   });
 
   return columns;

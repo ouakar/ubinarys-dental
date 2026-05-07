@@ -1,5 +1,6 @@
 const custom = require('@/controllers/pdfController');
 const mongoose = require('mongoose');
+const path = require('path');
 
 module.exports = downloadPdf = async (req, res, { directory, id }) => {
   try {
@@ -19,13 +20,14 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
 
       const fileId = modelName.toLowerCase() + '-' + result._id + '.pdf';
       const folderPath = modelName.toLowerCase();
-      const targetLocation = `src/public/download/${folderPath}/${fileId}`;
+      const targetLocation = path.join(__dirname, '../../public/download', folderPath, fileId);
       await custom.generatePdf(
         modelName,
         { filename: folderPath, format: 'A4', targetLocation },
         result,
         async () => {
-          return res.download(targetLocation, (error) => {
+          res.set('Content-Disposition', `attachment; filename="${fileId}"`);
+          return res.download(targetLocation, fileId, (error) => {
             if (error)
               return res.status(500).json({
                 success: false,

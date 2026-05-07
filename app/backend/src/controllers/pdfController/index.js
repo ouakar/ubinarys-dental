@@ -1,5 +1,6 @@
 const pug = require('pug');
 const fs = require('fs');
+const path = require('path');
 const moment = require('moment');
 let pdf = require('html-pdf');
 const { listAllSettings, loadSettings } = require('@/middlewares/settings');
@@ -20,6 +21,11 @@ exports.generatePdf = async (
 ) => {
   try {
     const { targetLocation } = info;
+
+    const targetDir = path.dirname(targetLocation);
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
 
     // if PDF already exists, then delete it and create a new PDF
     if (fs.existsSync(targetLocation)) {
@@ -56,7 +62,7 @@ exports.generatePdf = async (
       });
       const { dateFormat } = useDate({ settings });
 
-      const base = process.env.PUBLIC_SERVER_FILE?.replace(/\/$/, '');
+      const base = `http://localhost:${process.env.PORT || 8888}`;
       const logo = settings.company_logo?.replace(/^\//, '');
       settings.logoUrl = base && logo ? `${base}/${logo}` : '';
       settings.public_server_file = base ? `${base}/` : '';
@@ -77,7 +83,11 @@ exports.generatePdf = async (
           border: '10mm',
         })
         .toFile(targetLocation, function (error) {
-          if (error) throw new Error(error);
+          if (error) {
+            console.error('PDF Generation Error:', error);
+            if (callback) callback(error);
+            return;
+          }
           if (callback) callback();
         });
     }

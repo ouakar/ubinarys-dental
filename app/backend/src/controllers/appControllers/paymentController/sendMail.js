@@ -3,6 +3,7 @@ const Model = mongoose.model('Payment');
 const sendEmail = require('@/utils/sendEmail');
 const custom = require('@/controllers/pdfController');
 const { loadSettings } = require('@/middlewares/settings');
+const path = require('path');
 
 const mail = async (req, res) => {
   const { id } = req.body;
@@ -52,7 +53,7 @@ const mail = async (req, res) => {
   try {
     const fileId = 'payment-' + result._id + '.pdf';
     const folderPath = 'payment';
-    const targetLocation = `src/public/download/${folderPath}/${fileId}`;
+    const targetLocation = path.join(__dirname, '../../../../public/download', folderPath, fileId);
 
     await new Promise((resolve, reject) => {
       custom.generatePdf(
