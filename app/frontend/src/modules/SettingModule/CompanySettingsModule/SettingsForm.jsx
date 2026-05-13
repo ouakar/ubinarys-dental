@@ -23,6 +23,9 @@ const formItems = [
   { settingKey: 'company_address', label: 'Clinic Address', valueType: 'string' },
   { settingKey: 'company_phone', label: 'Clinic Phone', valueType: 'string' },
   { settingKey: 'company_email', label: 'Clinic Email', valueType: 'string' },
+  { settingKey: 'company_reg_number', label: 'ICE', valueType: 'string' },
+  { settingKey: 'company_tax_number', label: 'IF', valueType: 'string' },
+  { settingKey: 'company_vat_number', label: 'VAT Number', valueType: 'string' },
   { settingKey: 'default_vat_rate', label: 'Default VAT Rate (%)', valueType: 'number', defaultValue: 0 },
   { settingKey: 'currency', label: 'Default Currency (e.g. MAD)', valueType: 'string', defaultValue: 'MAD' },
 ];
