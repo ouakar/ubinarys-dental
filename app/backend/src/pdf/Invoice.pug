@@ -179,26 +179,26 @@ html
               div(style="margin-bottom: 8px;") #{model.taxRate}%
           td
             each item in model.items
-              div(style="margin-bottom: 8px;") #{item.price}
+              div(style="margin-bottom: 8px;") #{Number(item.price).toFixed(2)}
           td
             each item in model.items
               div(style="margin-bottom: 8px;") #{item.quantity}
           td
             each item in model.items
-              div(style="margin-bottom: 8px;") #{item.total}
+              div(style="margin-bottom: 8px;") #{Number(item.total).toFixed(2)}
 
     .totals-container
       .totals
         table
           tr
             td.left Total HT
-            td.val #{model.subTotal}
+            td.val #{Number(model.subTotal).toFixed(2)}
           tr
             td.left Total TVA #{model.taxRate}%
-            td.val #{model.taxTotal}
+            td.val #{Number(model.taxTotal).toFixed(2)}
           tr.ttc
             td.left Total TTC
-            td.val #{model.total}
+            td.val #{Number(model.total).toFixed(2)}
 
     .words
       p Arrêtée la présente facture à la somme de :
