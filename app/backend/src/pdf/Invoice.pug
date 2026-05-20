@@ -202,7 +202,7 @@ html
 
     .words
       p Arrêtée la présente facture à la somme de :
-      p.strong [Montant en toutes lettres à compléter]
+      p.strong #{amountToFrenchWords(model.total, settings.currency)}
 
     .footer
       p.strong Siège social : #{settings.company_address}

@@ -7,6 +7,7 @@ const { listAllSettings, loadSettings } = require('@/middlewares/settings');
 const { getData } = require('@/middlewares/serverData');
 const useLanguage = require('@/locale/useLanguage');
 const { useMoney, useDate } = require('@/settings');
+const amountToFrenchWords = require('@/utils/amountToFrenchWords');
 
 const pugFiles = ['invoice', 'offer', 'quote', 'payment'];
 
@@ -73,6 +74,7 @@ exports.generatePdf = async (
         translate,
         dateFormat,
         moneyFormatter,
+        amountToFrenchWords,
         moment: moment,
       });
 
