@@ -69,12 +69,23 @@ npm install
 
 Create `.env` in `app/backend/`:
 ```env
-DATABASE="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=ubinarys"
-JWT_SECRET="your-strong-random-secret"
-NODE_ENV="development"
-PUBLIC_SERVER_FILE="http://localhost:8888/"
-OPENSSL_CONF="/dev/null"
+DATABASE="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/ubinarys?retryWrites=true&w=majority"
+JWT_SECRET="your-strong-random-secret-at-least-32-chars"
+NODE_ENV="production"
+PORT=8888
+FRONTEND_URL="http://192.168.1.50"
+ALLOWED_ORIGINS="http://192.168.1.50,http://192.168.1.50:3000"
+PUBLIC_SERVER_FILE="http://192.168.1.50:8888/"
 ```
+
+Create `.env` in `app/frontend/`:
+```env
+VITE_BACKEND_SERVER="http://192.168.1.50:8888/"
+VITE_WEBSITE_URL="http://192.168.1.50/"
+```
+
+> [!NOTE]
+> **LAN Deployment Notice**: The example IP address (`192.168.1.50`) must be replaced with your clinic server's actual static IP address or domain name.
 
 ### 3. Initialize database (first time only)
 ```bash

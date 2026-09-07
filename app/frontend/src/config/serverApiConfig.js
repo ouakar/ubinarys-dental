@@ -1,25 +1,32 @@
-export const API_BASE_URL =
-  import.meta.env.PROD || import.meta.env.VITE_DEV_REMOTE == 'remote'
-    ? import.meta.env.VITE_BACKEND_SERVER + 'api/'
-    : '/api/';
-export const BASE_URL =
-  import.meta.env.PROD || import.meta.env.VITE_DEV_REMOTE
-    ? import.meta.env.VITE_BACKEND_SERVER
-    : '/';
+const ensureTrailingSlash = (url) => {
+  if (!url) return '/';
+  return url.endsWith('/') ? url : `${url}/`;
+};
 
-export const WEBSITE_URL = import.meta.env.PROD
-  ? 'http://cloud.ubinarysapp.com/'
-  : import.meta.env.VITE_WEBSITE_URL || 'http://localhost:3000/';
-export const DOWNLOAD_BASE_URL =
-  import.meta.env.PROD || import.meta.env.VITE_DEV_REMOTE
-    ? import.meta.env.VITE_BACKEND_SERVER + 'download/'
-    : '/download/';
+const getBackendServer = () => {
+  const envServer = import.meta.env.VITE_BACKEND_SERVER;
+  if (envServer) {
+    return ensureTrailingSlash(envServer);
+  }
+  return '/';
+};
+
+const isRemoteOrProd = import.meta.env.PROD || import.meta.env.VITE_DEV_REMOTE === 'remote';
+
+export const BASE_URL = isRemoteOrProd ? getBackendServer() : '/';
+export const API_BASE_URL = isRemoteOrProd ? `${getBackendServer()}api/` : '/api/';
+export const DOWNLOAD_BASE_URL = isRemoteOrProd ? `${getBackendServer()}download/` : '/download/';
+
+export const WEBSITE_URL = import.meta.env.VITE_WEBSITE_URL
+  ? ensureTrailingSlash(import.meta.env.VITE_WEBSITE_URL)
+  : isRemoteOrProd
+    ? ensureTrailingSlash(typeof window !== 'undefined' ? window.location.origin : '')
+    : 'http://localhost:3000/';
+
 export const ACCESS_TOKEN_NAME = 'x-auth-token';
 
-export const FILE_BASE_URL = import.meta.env.PROD 
-  ? import.meta.env.VITE_FILE_BASE_URL 
-  : '/';
-
-//  console.log(
-//    '🚀 Welcome to Ubinarys! Did you know that we also offer commercial customization services? Contact us at hello@ubinarysapp.com for more information.'
-//  );
+export const FILE_BASE_URL = import.meta.env.VITE_FILE_BASE_URL
+  ? ensureTrailingSlash(import.meta.env.VITE_FILE_BASE_URL)
+  : isRemoteOrProd
+    ? getBackendServer()
+    : '/';
