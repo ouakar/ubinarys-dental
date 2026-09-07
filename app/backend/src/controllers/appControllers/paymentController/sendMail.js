@@ -55,14 +55,11 @@ const mail = async (req, res) => {
     const folderPath = 'payment';
     const targetLocation = path.join(__dirname, '../../../../public/download', folderPath, fileId);
 
-    await new Promise((resolve, reject) => {
-      custom.generatePdf(
-        'Payment',
-        { filename: folderPath, format: 'A4', targetLocation },
-        result,
-        () => resolve()
-      ).catch(reject);
-    });
+    await custom.generatePdf(
+      'Payment',
+      { filename: folderPath, format: 'A4', targetLocation },
+      result
+    );
 
     await sendEmail({
       email: clientEmail,

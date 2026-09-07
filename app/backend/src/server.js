@@ -109,6 +109,14 @@ async function shutdown(signal, exitCode = 0) {
     console.log('MongoDB connection closed.');
   }
 
+  try {
+    const pdfController = require('./controllers/pdfController');
+    await pdfController.closeBrowser();
+    console.log('PDF Browser instance closed.');
+  } catch (e) {
+    // Ignore browser cleanup error
+  }
+
   process.exit(exitCode);
 }
 
