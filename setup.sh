@@ -117,7 +117,7 @@ if [[ "$START_NOW" =~ ^[Yy]$ ]]; then
     # Check for PM2
     if command_exists pm2; then
         echo "Starting backend with PM2..."
-        cd app/backend && pm2 start src/server.js --name "ubinarys-backend"
+        cd app/backend && pm2 start src/server.js --name "ubinarys"
         cd ../..
     else
         echo -e "${YELLOW}PM2 not found. Starting backend in background with Node...${NC}"

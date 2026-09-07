@@ -16,25 +16,33 @@ This document provides system administrators and DevOps engineers with complete 
 
 ## 2. Configuration & Environment Variables
 
-Production runtime environment parameters are stored securely at `/etc/ubinarys/ubinarys-backend.env` with strict permissions (`600`, owned by `ubinarys:ubinarys`).
+Production runtime environment parameters are stored securely at `/etc/ubinarys/ubinarys.env` with strict permissions (owner `root:ubinarys`, mode `640`).
 
 ### Required Configuration Variables
 ```ini
 # Node Environment
-NODE_ENV=production
-PORT=8888
+NODE_ENV="production"
+PORT="8888"
 
 # Security & Secrets
-JWT_SECRET=your_high_entropy_32char_minimum_secret_here
+JWT_SECRET="CHANGE_ME_MINIMUM_32_RANDOM_CHARACTERS"
 
 # Database Connectivity
-DATABASE=mongodb+srv://<user>:<password>@cluster0.example.mongodb.net/ubinarys-dental?retryWrites=true&wbb=majority
+DATABASE="mongodb+srv://USER:PASSWORD@CLUSTER.mongodb.net/ubinarys?retryWrites=true&w=majority"
 
 # Network & CORS Settings
-CORS_ORIGIN=https://clinic.ubinarys.com,http://192.168.1.50:8888
+FRONTEND_URL="https://clinic.example.com"
+ALLOWED_ORIGINS="https://clinic.example.com"
+PUBLIC_SERVER_FILE="https://clinic.example.com/"
+
+# Initial Administrator Credentials (used during initial npm run setup)
+INITIAL_ADMIN_EMAIL="admin@example.com"
+INITIAL_ADMIN_PASSWORD="CHANGE_ME_STRONG_PASSWORD"
+INITIAL_ADMIN_NAME="UBINARYS"
+INITIAL_ADMIN_SURNAME="Admin"
 
 # Puppeteer PDF Generator Path (optional if using system-installed Chromium)
-PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
 ```
 
 > **WARNING**: Never commit real database connection strings or JWT secrets into version control. Ensure all environment secrets are rotated periodically according to `SECURITY-NOTICE.md`.
@@ -43,33 +51,33 @@ PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 ## 3. Service Management (systemd)
 
-The backend service is managed by systemd as `ubinarys-backend.service`.
+The application service is managed by systemd as `ubinarys.service`.
 
 ### Standard Commands
 
 - **Check Service Status**:
   ```bash
-  sudo systemctl status ubinarys-backend
+  sudo systemctl status ubinarys.service
   ```
 
 - **Start Service**:
   ```bash
-  sudo systemctl start ubinarys-backend
+  sudo systemctl start ubinarys.service
   ```
 
 - **Stop Service**:
   ```bash
-  sudo systemctl stop ubinarys-backend
+  sudo systemctl stop ubinarys.service
   ```
 
 - **Restart Service**:
   ```bash
-  sudo systemctl restart ubinarys-backend
+  sudo systemctl restart ubinarys.service
   ```
 
 - **Enable Auto-start on System Boot**:
   ```bash
-  sudo systemctl enable ubinarys-backend
+  sudo systemctl enable ubinarys.service
   ```
 
 ### Inspecting Service Logs
@@ -78,12 +86,12 @@ Logs are written to systemd journald without exposing authorization tokens or pa
 
 - **Tail live log output**:
   ```bash
-  sudo journalctl -u ubinarys-backend -f
+  sudo journalctl -u ubinarys.service -f
   ```
 
 - **View recent logs with timestamp**:
   ```bash
-  sudo journalctl -u ubinarys-backend -n 100 --no-pager
+  sudo journalctl -u ubinarys.service -n 100 --no-pager
   ```
 
 ---
@@ -120,23 +128,20 @@ Deploying updates to a server is fully automated via `./deploy.sh`.
    cd /opt/ubinarys-dental
    ```
 
-2. Fetch latest code updates:
-   ```bash
-   git pull origin fix/production-stability-security
-   ```
-
-3. Execute the zero-downtime deployment script:
+2. Execute the zero-downtime deployment script:
    ```bash
    ./deploy.sh
    ```
 
 ### What `deploy.sh` Does:
-1. Validates Node 24 runtime environment.
+1. Validates Node 24 runtime environment (`set -Eeuo pipefail`).
 2. Installs root, backend, and frontend dependencies (`npm ci`).
 3. Runs the test suite (`npm run check`).
-4. Compiles optimized production frontend build (`dist`).
-5. Restarts `ubinarys-backend` systemd service.
-6. Verifies process health via `GET /health/ready`.
+4. Backs up existing frontend `dist` directory.
+5. Compiles optimized production frontend build.
+6. Restarts `ubinarys.service`.
+7. Polls `http://127.0.0.1:8888/health/ready` for up to 60 seconds.
+8. Automatically restores previous `dist` and dumps logs if health check fails.
 
 ---
 
@@ -186,7 +191,7 @@ npm run check
 
 This single command executes:
 1. Node version check (`>=24`).
-2. Backend API unit & integration tests (`startup`, `health`, `cors`, `pdf`).
+2. Backend API unit & integration tests (`startup`, `health`, `cors`, `pdf`, `download`, `credentials`, `session`).
 3. Frontend state persistence & configuration tests.
 4. ESLint code standard validations across codebases.
 5. Vite production bundle compilation check.
@@ -197,7 +202,7 @@ This single command executes:
 
 | Issue | Potential Cause | Remediation |
 |---|---|---|
-| Service crashes on launch with code 1 | Missing environment variables | Check `/etc/ubinarys/ubinarys-backend.env` for `DATABASE` and `JWT_SECRET`. |
+| Service crashes on launch with code 1 | Missing environment variables | Check `/etc/ubinarys/ubinarys.env` for `DATABASE` and `JWT_SECRET`. |
 | `/health/ready` returns 503 | MongoDB network disconnect or invalid credentials | Verify MongoDB connectivity, host address, and Atlas IP whitelist. |
 | PDF generation fails | Missing Chromium dependencies for Puppeteer | Install required Linux libraries or set `PUPPETEER_EXECUTABLE_PATH`. |
-| Frontend API CORS error | Request origin not listed in CORS configuration | Add frontend host/IP to `CORS_ORIGIN` in `/etc/ubinarys/ubinarys-backend.env`. |
+| Frontend API CORS error | Request origin not listed in CORS configuration | Add frontend host/IP to `ALLOWED_ORIGINS` in `/etc/ubinarys/ubinarys.env`. |

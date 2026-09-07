@@ -25,8 +25,20 @@ if [ "$NODE_MAJOR" -lt 24 ] || [ "$NODE_MAJOR" -ge 25 ]; then
     exit 1
 fi
 
-if [ ! -f ".env" ]; then
-    echo "ERROR: app/backend/.env file missing. Create it before starting." >&2
+if [ -f "/etc/ubinarys/ubinarys.env" ]; then
+    set -a
+    # shellcheck disable=SC1091
+    . /etc/ubinarys/ubinarys.env
+    set +a
+elif [ -f ".env" ]; then
+    set -a
+    # shellcheck disable=SC1091
+    . .env
+    set +a
+fi
+
+if [ -z "${DATABASE:-}" ] || [ -z "${JWT_SECRET:-}" ]; then
+    echo "ERROR: DATABASE and JWT_SECRET environment variables must be defined." >&2
     exit 1
 fi
 
