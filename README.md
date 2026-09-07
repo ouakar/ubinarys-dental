@@ -107,11 +107,17 @@ npm run dev
 # → http://localhost:3000
 ```
 
-### 6. Default login
-- Email: `admin@demo.com`
-- Password: `admin123`
+### 6. Initial Administrator Account
+Configure initial administrator credentials in `/etc/ubinarys/ubinarys.env` (or `app/backend/.env` for local development):
+- `INITIAL_ADMIN_EMAIL`: Your initial admin email address
+- `INITIAL_ADMIN_PASSWORD`: High-entropy password (min 12 characters, uppercase, lowercase, number, special char)
+- `INITIAL_ADMIN_NAME`: Administrator first name
+- `INITIAL_ADMIN_SURNAME`: Administrator last name
 
----
+Run initial setup once:
+```bash
+cd app/backend && npm run setup
+```
 
 ## 🚀 Production Deployment & Systemd Service
 

@@ -36,9 +36,7 @@ const LoginPage = () => {
           name="normal_login"
           className="login-form"
           initialValues={{
-            remember: true,
-            email: 'admin@ubinarys.ma',
-            password: 'Admin@2026',
+            remember: false,
           }}
           onFinish={onFinish}
         >
