@@ -3,6 +3,7 @@ import { API_BASE_URL } from '@/config/serverApiConfig';
 import axios from 'axios';
 import errorHandler from '@/request/errorHandler';
 import successHandler from '@/request/successHandler';
+import storePersist from '@/redux/storePersist';
 
 export const login = async ({ loginData }) => {
   try {
@@ -82,11 +83,26 @@ export const resetPassword = async ({ resetPasswordData }) => {
     return errorHandler(error);
   }
 };
-export const logout = async () => {
+export const logout = async ({ token, refreshToken } = {}) => {
   axios.defaults.withCredentials = true;
   try {
-    // window.localStorage.clear();
-    const response = await axios.post(API_BASE_URL + `logout?timestamp=${new Date().getTime()}`);
+    if (!token) {
+      const auth = storePersist.get('auth');
+      token = auth?.current?.token;
+    }
+    if (!refreshToken) {
+      const auth = storePersist.get('auth');
+      refreshToken = auth?.current?.refreshToken;
+    }
+
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const body = refreshToken ? { refreshToken } : {};
+
+    const response = await axios.post(
+      API_BASE_URL + `logout?timestamp=${new Date().getTime()}`,
+      body,
+      { headers }
+    );
     const { status, data } = response;
 
     successHandler(

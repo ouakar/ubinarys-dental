@@ -33,6 +33,11 @@ const refresh = async (req, res, { userModel, jwtSecret = 'JWT_SECRET' }) => {
       });
     }
 
+    // Preserve selected session lifetime during refresh (30d for remember me, otherwise 7d)
+    const isRemembered = Boolean(
+      verified.remember || (verified.exp && verified.iat && (verified.exp - verified.iat > 8 * 24 * 60 * 60))
+    );
+
     // Generate new access token
     const newToken = jwt.sign(
       { id: verified.id },
@@ -40,23 +45,24 @@ const refresh = async (req, res, { userModel, jwtSecret = 'JWT_SECRET' }) => {
       { expiresIn: '15m' }
     );
 
+    // Generate new rotated refresh token with preserved lifetime
     const newRefreshToken = jwt.sign(
-      { id: verified.id },
+      { id: verified.id, remember: isRemembered },
       process.env[jwtSecret],
-      { expiresIn: '7d' }
+      { expiresIn: isRemembered ? '30d' : '7d' }
     );
 
-    // Pull the old refresh token to invalidate it
-    await UserPassword.updateOne(
+    // Pull the old refresh token to invalidate it (rotation)
+    await UserPassword.findOneAndUpdate(
       { _id: userPassword._id },
       { $pull: { loggedSessions: refreshToken } }
-    );
+    ).exec();
 
     // Add new tokens to loggedSessions safely up to limit
-    await UserPassword.updateOne(
+    await UserPassword.findOneAndUpdate(
       { _id: userPassword._id },
       { $push: { loggedSessions: { $each: [newToken, newRefreshToken], $slice: -50 } } }
-    );
+    ).exec();
 
     return res.status(200).json({
       success: true,

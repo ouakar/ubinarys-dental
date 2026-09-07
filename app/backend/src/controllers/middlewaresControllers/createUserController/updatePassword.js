@@ -30,6 +30,7 @@ const updatePassword = async (userModel, req, res) => {
   const UserPasswordData = {
     password: passwordHash,
     salt: salt,
+    loggedSessions: [],
   };
 
   const resultPassword = await UserPassword.findOneAndUpdate(

@@ -18,10 +18,11 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
       { expiresIn: '15m' }
     );
 
+    const isRemembered = Boolean(req.body.remember);
     const refreshToken = jwt.sign(
-      { id: user._id },
+      { id: user._id, remember: isRemembered },
       process.env.JWT_SECRET,
-      { expiresIn: req.body.remember ? '365d' : '7d' }
+      { expiresIn: isRemembered ? '30d' : '7d' }
     );
 
     await UserPasswordModel.findOneAndUpdate(
@@ -41,7 +42,7 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
         photo: user.photo,
         token: token,
         refreshToken: refreshToken,
-        maxAge: req.body.remember ? 365 : null,
+        maxAge: isRemembered ? 30 : 7,
       },
       message: 'Connexion réussie',
     });

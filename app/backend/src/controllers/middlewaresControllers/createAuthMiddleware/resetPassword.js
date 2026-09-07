@@ -68,7 +68,7 @@ const resetPassword = async (req, res, { userModel }) => {
   await UserPassword.findOneAndUpdate(
     { user: userId },
     {
-      $push: { loggedSessions: token },
+      loggedSessions: [token],
       password: hashedPassword,
       salt: salt,
       emailToken: emailToken,

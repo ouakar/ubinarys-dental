@@ -28,6 +28,7 @@ const updateProfilePassword = async (userModel, req, res) => {
   const UserPasswordData = {
     password: passwordHash,
     salt: salt,
+    loggedSessions: [],
   };
 
   if (userProfile.email === 'admin@admin.com') {

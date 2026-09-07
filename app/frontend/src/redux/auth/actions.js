@@ -112,11 +112,13 @@ export const logout = () => async (dispatch) => {
   const result = window.localStorage.getItem('auth');
   const tmpAuth = JSON.parse(result);
   const settings = window.localStorage.getItem('settings');
-  const tmpSettings = JSON.parse(settings);
+  const tmpSettings = settings ? JSON.parse(settings) : null;
+  const token = tmpAuth?.current?.token;
+  const refreshToken = tmpAuth?.current?.refreshToken;
   window.localStorage.removeItem('auth');
   window.localStorage.removeItem('settings');
   window.localStorage.setItem('isLogout', JSON.stringify({ isLogout: true }));
-  const data = await authService.logout();
+  const data = await authService.logout({ token, refreshToken });
   if (data.success === false) {
     const auth_state = {
       current: tmpAuth,
