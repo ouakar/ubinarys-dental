@@ -2,7 +2,7 @@ require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
 const { globSync } = require('glob');
 const fs = require('fs');
-const { generate: uniqueId } = require('shortid');
+const crypto = require('crypto');
 
 const mongoose = require('mongoose');
 
@@ -37,7 +37,7 @@ const setup = async (req, res) => {
     });
   }
 
-  const salt = uniqueId();
+  const salt = crypto.randomBytes(16).toString('hex');
 
   const passwordHash = newAdminPassword.generateHash(salt, password);
 
