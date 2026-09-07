@@ -3,6 +3,8 @@
  * Usage: node src/setup/seedTreatments.js
  */
 
+require('dotenv').config({ path: '.env' });
+require('dotenv').config({ path: '.env.local' });
 require('module-alias/register');
 
 const mongoose = require('mongoose');
@@ -26,8 +28,12 @@ const treatments = [
 ];
 
 async function seed() {
-  const dbUri = process.env.DATABASE || 'mongodb+srv://wisslan2013_db_user:PYoAQI6wnSEEvSpJ@ubinarys.yf4wdly.mongodb.net/?appName=ubinarys';
-  await mongoose.connect(dbUri);
+  if (!process.env.DATABASE) {
+    console.error('❌ Error: DATABASE environment variable is required to run seed script.');
+    process.exit(1);
+  }
+
+  await mongoose.connect(process.env.DATABASE);
   console.log('✅ Connected to MongoDB');
 
   const Treatment = mongoose.model('Treatment');
@@ -38,8 +44,12 @@ async function seed() {
   for (const t of treatments) {
     const existing = await Treatment.findOne({ code: t.code });
     if (existing) {
-      // Update price and duration if exists
-      await Treatment.findByIdAndUpdate(existing._id, { price: t.price, defaultPriceMAD: t.defaultPriceMAD, duration: t.duration, category: t.category });
+      await Treatment.findByIdAndUpdate(existing._id, {
+        price: t.price,
+        defaultPriceMAD: t.defaultPriceMAD,
+        duration: t.duration,
+        category: t.category,
+      });
       skipped++;
       console.log(`⚠️  Updated existing: ${t.code} - ${t.name}`);
     } else {
