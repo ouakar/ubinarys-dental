@@ -1,6 +1,10 @@
 {
   "name": "ubinarys-root",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=10"
+  },
   "scripts": {
     "install:all": "cd app/backend && npm install && cd ../frontend && npm install",
     "setup": "cd app/backend && npm run setup",

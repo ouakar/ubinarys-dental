@@ -51,8 +51,9 @@ bash setup.sh
 ### Manual Setup
 
 #### 1. Prerequisites
-- Node.js 18+
-- MongoDB Atlas account (or local MongoDB 6)
+- **Node.js 24 LTS** (v24.x required, check with `node --version`)
+- **npm 10+** (check with `npm --version`)
+- MongoDB Atlas account or local MongoDB
 
 #### 2. Clone the repo
 ```bash

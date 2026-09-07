@@ -36,12 +36,20 @@ fi
 
 # Check Node.js
 if ! command_exists node; then
-    echo -e "${YELLOW}Installing Node.js v18 LTS...${NC}"
-    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+    echo -e "${YELLOW}Installing Node.js 24 LTS...${NC}"
+    curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
     sudo apt-get install -y nodejs
 else
     NODE_VERSION=$(node -v)
     echo -e "${GREEN}✔ Node.js is already installed ($NODE_VERSION).${NC}"
+fi
+
+# Verify Node version is 24
+NODE_MAJOR=$(node -v | cut -d'.' -f1 | tr -d 'v')
+if [ "$NODE_MAJOR" -lt 24 ] || [ "$NODE_MAJOR" -ge 25 ]; then
+    echo -e "${RED}Error: Node.js version $NODE_VERSION detected. Ubinarys Dental requires Node.js 24 LTS.${NC}"
+    echo -e "${YELLOW}Please install Node.js 24 LTS manually or via NodeSource.${NC}"
+    exit 1
 fi
 
 # Check npm
