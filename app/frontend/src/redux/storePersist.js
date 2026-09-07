@@ -26,7 +26,9 @@ export const localStorageHealthCheck = async () => {
     for (const key of keysToRemove) {
       try {
         window.localStorage.removeItem(key);
-      } catch (e) {}
+      } catch (e) {
+        void e;
+      }
     }
   } catch (error) {
     console.error('localStorage health check error:', error);
@@ -54,7 +56,9 @@ export const storePersist = {
       console.error(`Failed to read key "${key}" from localStorage:`, error);
       try {
         window.localStorage.removeItem(key);
-      } catch (e) {}
+      } catch (e) {
+        void e;
+      }
       return false;
     }
   },

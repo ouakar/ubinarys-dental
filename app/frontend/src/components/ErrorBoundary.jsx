@@ -64,8 +64,7 @@ export default class ErrorBoundary extends React.Component {
                 marginBottom: '1.5rem',
               }}
             >
-              L'application a rencontré un problème imprévu. Veuillez rafraîchir la page pour
-              continuer.
+              {"L'application a rencontré un problème imprévu. Veuillez rafraîchir la page pour continuer."}
             </p>
             <button
               onClick={this.handleReload}

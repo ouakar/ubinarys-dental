@@ -6,6 +6,14 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
+const path = require('path');
+const { globSync } = require('glob');
+
+// Register Mongoose models
+const modelsFiles = globSync('./src/models/**/*.js');
+for (const filePath of modelsFiles) {
+  require(path.resolve(filePath));
+}
 
 const coreAuthRouter = require('./routes/coreRoutes/coreAuth');
 const coreApiRouter = require('./routes/coreRoutes/coreApi');
@@ -59,11 +67,10 @@ const parseOrigins = () => {
   return Array.from(new Set(validOrigins));
 };
 
-const allowedOrigins = parseOrigins();
-
 app.use(
   cors({
     origin: (origin, callback) => {
+      const allowedOrigins = parseOrigins();
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -81,20 +88,16 @@ app.use(
   })
 );
 
-app.use(mongoSanitize());
-
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 2000,
-  standardHeaders: true,
-  legacyHeaders: false,
+// Safe in-place NoSQL Mongo sanitization
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  if (req.query) mongoSanitize.sanitize(req.query);
+  next();
 });
-
-app.use('/api', limiter);
-app.use(compression());
 
 // Health Check Endpoints (Unauthenticated)
 app.get('/health/live', (req, res) => {
@@ -117,6 +120,16 @@ app.get('/health/ready', (req, res) => {
     service: 'ubinarys-backend',
   });
 });
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 2000,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api', limiter);
+app.use(compression());
 
 // API Routes
 app.use('/api', coreAuthRouter);

@@ -69,6 +69,7 @@ exports.developmentErrors = (error, req, res, next) => {
   No stacktraces are leaked to admin
 */
 exports.productionErrors = (error, req, res, next) => {
+  console.error('SERVER TEST ERROR:', error);
   return res.status(500).json({
     success: false,
     message: error.message,
