@@ -45,6 +45,8 @@ Thumbs.db
 # PDF / generated downloads & uploads
 app/backend/public/download/
 app/backend/public/uploads/
+app/backend/src/public/download/
+app/backend/src/public/uploads/
 public/invoices/
 public/quotes/
 public/download/
