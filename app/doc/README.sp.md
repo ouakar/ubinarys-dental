@@ -20,10 +20,8 @@ UBINARYS es un ERP/CRM de Código Abierto y "Fair-Code" (Facturación/Inventario
 
 **Demo en Vivo** : [https://www.ubinarysapp.com/demo-erp-crm/](https://www.ubinarysapp.com/demo-erp-crm/)
 
-**Credenciales** :
-```
-usuario: admin@admin.com  contraseña: admin123
-```
+**Configuración inicial** :
+Configure las variables INITIAL_ADMIN_EMAIL e INITIAL_ADMIN_PASSWORD.
 
 ```
 🚀 Dale una Estrella ⭐️ y Haz un Fork a este proyecto ...  ¡Feliz codificación!🤩`
