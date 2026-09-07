@@ -19,7 +19,7 @@ import { generate as uniqueId } from 'shortid';
 
 import { selectCurrentItem } from '@/redux/erp/selectors';
 
-import { DOWNLOAD_BASE_URL } from '@/config/serverApiConfig';
+import { request } from '@/request';
 import { useMoney, useDate } from '@/settings';
 import useMail from '@/hooks/useMail';
 import { useNavigate } from 'react-router-dom';
@@ -157,13 +157,11 @@ export default function ReadItem({ config, selectedItem }) {
           <Button
             key={`${uniqueId()}`}
             onClick={() => {
-              const url = `${DOWNLOAD_BASE_URL}${entity}/${entity}-${currentErp._id}.pdf`;
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `${entity}-${currentErp.number}.pdf`;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
+              request.download({
+                entity,
+                id: currentErp._id,
+                filename: `${entity}-${currentErp.number}.pdf`,
+              });
             }}
             icon={<FilePdfOutlined />}
           >

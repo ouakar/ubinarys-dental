@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_BASE_URL } from '@/config/serverApiConfig';
+import { API_BASE_URL, DOWNLOAD_BASE_URL } from '@/config/serverApiConfig';
 
 import errorHandler from './errorHandler';
 import successHandler from './successHandler';
@@ -369,6 +369,34 @@ const request = {
         notifyOnFailed: true,
       });
       return response.data;
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+
+  download: async ({ entity, id, filename }) => {
+    try {
+      includeToken();
+      const auth = storePersist.get('auth');
+      const token = auth?.current?.token;
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const downloadUrl = `${DOWNLOAD_BASE_URL}${entity}/${entity}-${id}.pdf`;
+      const response = await axios.get(downloadUrl, {
+        responseType: 'blob',
+        headers,
+      });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const objectUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = filename || `${entity}-${id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => {
+        window.URL.revokeObjectURL(objectUrl);
+      }, 100);
+      return true;
     } catch (error) {
       return errorHandler(error);
     }

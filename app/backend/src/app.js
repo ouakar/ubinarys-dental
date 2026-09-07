@@ -135,7 +135,7 @@ app.use(compression());
 app.use('/api', coreAuthRouter);
 app.use('/api', adminAuth.isValidAuthToken, coreApiRouter);
 app.use('/api', adminAuth.isValidAuthToken, erpApiRouter);
-app.use('/download', coreDownloadRouter);
+app.use('/download', adminAuth.isValidAuthToken, coreDownloadRouter);
 app.use('/public', corePublicRouter);
 
 // 404 Handler

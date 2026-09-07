@@ -9,7 +9,7 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
       return res.status(404).json({
         success: false,
         result: null,
-        message: `Model '${modelName}' does not exist`,
+        message: 'Document not found',
       });
     }
 
@@ -19,7 +19,11 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
     }).exec();
 
     if (!result) {
-      throw { name: 'ValidationError' };
+      return res.status(404).json({
+        success: false,
+        result: null,
+        message: 'Document not found',
+      });
     }
 
     const fileId = modelName.toLowerCase() + '-' + result._id + '.pdf';
@@ -38,34 +42,23 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
         return res.status(500).json({
           success: false,
           result: null,
-          message: "Couldn't find file",
-          error: error.message,
+          message: 'Unable to deliver generated PDF file',
         });
       }
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
+    if (error.name === 'ValidationError' || error.name === 'BSONTypeError') {
       return res.status(400).json({
         success: false,
         result: null,
-        error: error.message,
-        message: 'Required fields are not supplied',
-      });
-    } else if (error.name === 'BSONTypeError') {
-      return res.status(400).json({
-        success: false,
-        result: null,
-        error: error.message,
-        message: 'Invalid ID',
-      });
-    } else {
-      return res.status(500).json({
-        success: false,
-        result: null,
-        error: error.message,
-        message: error.message,
-        controller: 'downloadPDF.js',
+        message: 'Invalid parameters provided for download',
       });
     }
+
+    return res.status(500).json({
+      success: false,
+      result: null,
+      message: 'Failed to generate or download document',
+    });
   }
 };

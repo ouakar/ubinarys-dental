@@ -22,7 +22,7 @@ import { useErpContext } from '@/context/erp';
 import { generate as uniqueId } from 'shortid';
 import { useNavigate } from 'react-router-dom';
 
-import { DOWNLOAD_BASE_URL } from '@/config/serverApiConfig';
+import { request } from '@/request';
 
 function AddNewItem({ config }) {
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ export default function DataTable({ config, extra = [] }) {
     navigate(`/${entity}/update/${record._id}`);
   };
   const handleDownload = (record) => {
-    window.open(`${DOWNLOAD_BASE_URL}${entity}/${entity}-${record._id}.pdf`, '_blank');
+    request.download({ entity, id: record._id });
   };
 
   const handleDelete = (record) => {
