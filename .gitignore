@@ -39,8 +39,7 @@ yarn-debug.log*
 Thumbs.db
 
 # IDE
-.vscode/*
-!.vscode/settings.json
+.vscode/
 .idea/
 
 # PDF / generated downloads & uploads

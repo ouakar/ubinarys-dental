@@ -101,7 +101,35 @@ exports.generatePdf = async (
     ).replace(/\/$/, '');
 
     const logo = settings.company_logo?.replace(/^\//, '');
-    settings.logoUrl = baseUrl && logo ? `${baseUrl}/${logo}` : '';
+    let logoDataUrl = '';
+    if (logo) {
+      const cleanLogo = logo.replace(/^(\/|public\/)+/, '');
+      const possibleLocalPaths = [
+        path.join(process.cwd(), 'src/public', cleanLogo),
+        path.join(process.cwd(), 'public', cleanLogo),
+        path.join(__dirname, '../../public', cleanLogo),
+        path.join(process.cwd(), 'src/public', logo),
+        path.join(process.cwd(), 'public', logo),
+        path.join(__dirname, '../../public', logo),
+      ];
+      for (const p of possibleLocalPaths) {
+        if (fs.existsSync(p)) {
+          try {
+            const ext = path.extname(p).slice(1).toLowerCase();
+            const mimeType = ext === 'svg' ? 'image/svg+xml' : `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+            const b64 = fs.readFileSync(p).toString('base64');
+            logoDataUrl = `data:${mimeType};base64,${b64}`;
+            break;
+          } catch (e) {
+            // fallback to http URL below
+          }
+        }
+      }
+      if (!logoDataUrl && baseUrl) {
+        logoDataUrl = `${baseUrl}/${logo}`;
+      }
+    }
+    settings.logoUrl = logoDataUrl;
     settings.public_server_file = baseUrl ? `${baseUrl}/` : '';
 
     const pugPath = path.join(process.cwd(), 'src/pdf', `${modelName}.pug`);
@@ -119,8 +147,8 @@ exports.generatePdf = async (
     page = await browser.newPage();
 
     await page.setContent(htmlContent, {
-      waitUntil: 'networkidle0',
-      timeout: 30000,
+      waitUntil: 'load',
+      timeout: 15000,
     });
 
     await page.pdf({

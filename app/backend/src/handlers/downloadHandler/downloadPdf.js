@@ -2,7 +2,7 @@ const custom = require('@/controllers/pdfController');
 const mongoose = require('mongoose');
 const path = require('path');
 
-module.exports = downloadPdf = async (req, res, { directory, id }) => {
+const downloadPdf = async (req, res, { directory, id }) => {
   try {
     const modelName = directory.slice(0, 1).toUpperCase() + directory.slice(1);
     if (!mongoose.models[modelName]) {
@@ -14,9 +14,13 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
     }
 
     const Model = mongoose.model(modelName);
-    const result = await Model.findOne({
+    let query = Model.findOne({
       _id: id,
-    }).exec();
+    });
+    if (typeof query.populate === 'function' && Model.schema?.paths?.client) {
+      query = query.populate('client');
+    }
+    const result = typeof query.exec === 'function' ? await query.exec() : await query;
 
     if (!result) {
       return res.status(404).json({
@@ -62,3 +66,5 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
     });
   }
 };
+
+module.exports = downloadPdf;

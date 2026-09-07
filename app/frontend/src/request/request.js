@@ -382,6 +382,7 @@ const request = {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const downloadUrl = `${DOWNLOAD_BASE_URL}${entity}/${entity}-${id}.pdf`;
       const response = await axios.get(downloadUrl, {
+        baseURL: '',
         responseType: 'blob',
         headers,
       });
@@ -398,6 +399,14 @@ const request = {
       }, 100);
       return true;
     } catch (error) {
+      if (error.response && error.response.data instanceof Blob) {
+        try {
+          const text = await error.response.data.text();
+          error.response.data = JSON.parse(text);
+        } catch (e) {
+          // ignore parsing error
+        }
+      }
       return errorHandler(error);
     }
   },
