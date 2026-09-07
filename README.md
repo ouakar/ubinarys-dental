@@ -102,6 +102,31 @@ npm run dev
 
 ---
 
+## 🚀 Production Deployment & Systemd Service
+
+### Installation & Deployment
+```bash
+# 1. Install systemd service (runs under dedicated 'ubinarys' user)
+sudo ./install-service.sh
+
+# 2. Deploy updates safely (runs npm ci, builds frontend, restarts service)
+./deploy.sh
+```
+
+### Systemd Troubleshooting & Logging
+```bash
+# Check service status
+systemctl status ubinarys.service
+
+# View recent log output
+journalctl -u ubinarys.service -n 100 --no-pager
+
+# Follow live systemd logs
+journalctl -u ubinarys.service -f
+```
+
+---
+
 ## 📁 Project Structure
 
 ```
