@@ -1,55 +1,83 @@
 function isJsonString(str) {
+  if (typeof str !== 'string') return false;
   try {
-    JSON.parse(str);
+    const obj = JSON.parse(str);
+    return typeof obj === 'object' && obj !== null;
   } catch (e) {
-    console.error(e.message);
     return false;
   }
-  return true;
 }
 
 export const localStorageHealthCheck = async () => {
-  for (var i = 0; i < localStorage.length; ++i) {
-    try {
-      const result = window.localStorage.getItem(localStorage.key(i));
-      if (!isJsonString(result)) {
-        window.localStorage.removeItem(localStorage.key(i));
+  try {
+    const keysToRemove = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (!key) continue;
+      try {
+        const value = window.localStorage.getItem(key);
+        if (value && !isJsonString(value)) {
+          // Keep string items or remove corrupt JSON
+        }
+      } catch (e) {
+        keysToRemove.push(key);
       }
-      if (result && Object.keys(localStorage.key(i)).length == 0) {
-        window.localStorage.removeItem(localStorage.key(i));
-      }
-    } catch (error) {
-      window.localStorage.clear();
-      // Handle the exception here
-      console.error('window.localStorage Exception occurred:', error);
-      // You can choose to ignore certain exceptions or take other appropriate actions
     }
+    for (const key of keysToRemove) {
+      try {
+        window.localStorage.removeItem(key);
+      } catch (e) {}
+    }
+  } catch (error) {
+    console.error('localStorage health check error:', error);
   }
 };
 
 export const storePersist = {
   set: (key, state) => {
-    window.localStorage.setItem(key, JSON.stringify(state));
+    try {
+      window.localStorage.setItem(key, JSON.stringify(state));
+    } catch (error) {
+      console.error(`Failed to write key "${key}" to localStorage:`, error);
+    }
   },
   get: (key) => {
-    const result = window.localStorage.getItem(key);
-    if (!result) {
-      return false;
-    } else {
+    try {
+      const result = window.localStorage.getItem(key);
+      if (!result) return false;
       if (!isJsonString(result)) {
         window.localStorage.removeItem(key);
         return false;
-      } else return JSON.parse(result);
+      }
+      return JSON.parse(result);
+    } catch (error) {
+      console.error(`Failed to read key "${key}" from localStorage:`, error);
+      try {
+        window.localStorage.removeItem(key);
+      } catch (e) {}
+      return false;
     }
   },
   remove: (key) => {
-    window.localStorage.removeItem(key);
+    try {
+      window.localStorage.removeItem(key);
+    } catch (error) {
+      console.error(`Failed to remove key "${key}" from localStorage:`, error);
+    }
   },
   getAll: () => {
-    return window.localStorage;
+    try {
+      return window.localStorage;
+    } catch (error) {
+      return {};
+    }
   },
   clear: () => {
-    window.localStorage.clear();
+    try {
+      window.localStorage.clear();
+    } catch (error) {
+      console.error('Failed to clear localStorage:', error);
+    }
   },
 };
 

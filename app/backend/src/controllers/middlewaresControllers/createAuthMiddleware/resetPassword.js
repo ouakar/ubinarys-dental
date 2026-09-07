@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
-const shortid = require('shortid');
+const crypto = require('crypto');
 
 const resetPassword = async (req, res, { userModel }) => {
   const UserPassword = mongoose.model(userModel + 'Password');
@@ -53,9 +53,9 @@ const resetPassword = async (req, res, { userModel }) => {
     });
   }
 
-  const salt = shortid.generate();
+  const salt = crypto.randomBytes(16).toString('hex');
   const hashedPassword = bcrypt.hashSync(salt + password);
-  const emailToken = shortid.generate();
+  const emailToken = crypto.randomBytes(32).toString('hex');
 
   const token = jwt.sign(
     {
@@ -72,7 +72,7 @@ const resetPassword = async (req, res, { userModel }) => {
       password: hashedPassword,
       salt: salt,
       emailToken: emailToken,
-      resetToken: shortid.generate(),
+      resetToken: crypto.randomBytes(32).toString('hex'),
       emailVerified: true,
     },
     {

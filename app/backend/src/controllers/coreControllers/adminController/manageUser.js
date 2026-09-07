@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Admin = mongoose.model('Admin');
 const AdminPassword = mongoose.model('AdminPassword');
-const { generate: uniqueId } = require('shortid');
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 
 const paginatedList = require('@/controllers/middlewaresControllers/createCRUDController/paginatedList');
@@ -32,7 +32,7 @@ const create = async (req, res) => {
     enabled: enabled !== undefined ? enabled : true,
   }).save();
 
-  const salt = uniqueId();
+  const salt = crypto.randomBytes(16).toString('hex');
   const passwordHash = bcrypt.hashSync(salt + password);
 
   await new AdminPassword({
@@ -70,7 +70,7 @@ const update = async (req, res) => {
   }
 
   if (password) {
-    const salt = uniqueId();
+    const salt = crypto.randomBytes(16).toString('hex');
     const passwordHash = bcrypt.hashSync(salt + password);
     await AdminPassword.findOneAndUpdate(
       { user: id },

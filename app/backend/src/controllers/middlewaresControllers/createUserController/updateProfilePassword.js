@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const { generate: uniqueId } = require('shortid');
+const crypto = require('crypto');
 
 const updateProfilePassword = async (userModel, req, res) => {
   const UserPassword = mongoose.model(userModel + 'Password');
@@ -21,9 +21,7 @@ const updateProfilePassword = async (userModel, req, res) => {
   if (password !== passwordCheck)
     return res.status(400).json({ msg: 'Enter the same password twice for verification.' });
 
-  // Find document by id and updates with the required fields
-
-  const salt = uniqueId();
+  const salt = crypto.randomBytes(16).toString('hex');
 
   const passwordHash = bcrypt.hashSync(salt + password);
 

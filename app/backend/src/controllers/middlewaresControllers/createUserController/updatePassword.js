@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { generate: uniqueId } = require('shortid');
+const crypto = require('crypto');
 
 const updatePassword = async (userModel, req, res) => {
   const UserPassword = mongoose.model(userModel + 'Password');
@@ -15,8 +15,6 @@ const updatePassword = async (userModel, req, res) => {
       msg: 'The password needs to be at least 8 characters long.',
     });
 
-  // Find document by id and updates with the required fields
-
   if (userProfile.email === 'admin@admin.com') {
     return res.status(403).json({
       success: false,
@@ -25,7 +23,7 @@ const updatePassword = async (userModel, req, res) => {
     });
   }
 
-  const salt = uniqueId();
+  const salt = crypto.randomBytes(16).toString('hex');
 
   const passwordHash = bcrypt.hashSync(salt + password);
 

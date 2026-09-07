@@ -7,16 +7,20 @@ import { Provider } from 'react-redux';
 import store from '@/redux/store';
 import PageLoader from '@/components/PageLoader';
 
+import ErrorBoundary from '@/components/ErrorBoundary';
+
 const UbinarysOs = lazy(() => import('./apps/UbinarysOs'));
 
 export default function RootApp() {
   return (
-    <BrowserRouter>
-      <Provider store={store}>
-        <Suspense fallback={<PageLoader />}>
-          <UbinarysOs />
-        </Suspense>
-      </Provider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Provider store={store}>
+          <Suspense fallback={<PageLoader />}>
+            <UbinarysOs />
+          </Suspense>
+        </Provider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

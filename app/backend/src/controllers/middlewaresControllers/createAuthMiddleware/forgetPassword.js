@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const checkAndCorrectURL = require('./checkAndCorrectURL');
 const sendMail = require('./sendMail');
-const shortid = require('shortid');
+const crypto = require('crypto');
 const { loadSettings } = require('@/middlewares/settings');
 
 const { useAppSettings } = require('@/settings');
@@ -35,7 +35,6 @@ const forgetPassword = async (req, res, { userModel }) => {
   const user = await User.findOne({ email: email, removed: false });
   const databasePassword = await UserPassword.findOne({ user: user._id, removed: false });
 
-  // console.log(user);
   if (!user)
     return res.status(404).json({
       success: false,
@@ -43,7 +42,7 @@ const forgetPassword = async (req, res, { userModel }) => {
       message: 'No account with this email has been registered.',
     });
 
-  const resetToken = shortid.generate();
+  const resetToken = crypto.randomBytes(32).toString('hex');
   await UserPassword.findOneAndUpdate(
     { user: user._id },
     { resetToken },
