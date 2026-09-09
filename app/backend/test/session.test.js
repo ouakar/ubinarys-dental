@@ -58,8 +58,16 @@ test('Revoked refresh token cannot refresh and returns 401', async () => {
   const fakeUserId = new mongoose.Types.ObjectId();
   const revokedRefreshToken = jwt.sign({ id: fakeUserId.toString() }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
+  const Admin = mongoose.model('Admin');
   const AdminPassword = mongoose.model('AdminPassword');
+  const origAdminFindOne = Admin.findOne;
   const origFindOne = AdminPassword.findOne;
+
+  Admin.findOne = async () => ({
+    _id: fakeUserId,
+    email: 'admin@demo.com',
+    enabled: true,
+  });
 
   // Simulate user whose loggedSessions does NOT contain the revoked refresh token
   AdminPassword.findOne = async () => ({
@@ -89,6 +97,7 @@ test('Revoked refresh token cannot refresh and returns 401', async () => {
     assert.strictEqual(responseBody.success, false);
     assert.strictEqual(responseBody.message, 'Refresh token unrecognized');
   } finally {
+    Admin.findOne = origAdminFindOne;
     AdminPassword.findOne = origFindOne;
   }
 });
@@ -101,11 +110,19 @@ test('Refresh-token rotation invalidates the old token and issues new tokens', a
     { expiresIn: '30d' }
   );
 
+  const Admin = mongoose.model('Admin');
   const AdminPassword = mongoose.model('AdminPassword');
   let currentSessions = [oldRefreshToken];
 
+  const origAdminFindOne = Admin.findOne;
   const origFindOne = AdminPassword.findOne;
   const origUpdateOne = AdminPassword.updateOne;
+
+  Admin.findOne = async () => ({
+    _id: fakeUserId,
+    email: 'admin@demo.com',
+    enabled: true,
+  });
 
   AdminPassword.findOne = async () => ({
     _id: new mongoose.Types.ObjectId(),
@@ -155,6 +172,7 @@ test('Refresh-token rotation invalidates the old token and issues new tokens', a
     // New refresh token must be pushed
     assert.strictEqual(pushedTokens.includes(responseBody.result.refreshToken), true, 'New refresh token must be added');
   } finally {
+    Admin.findOne = origAdminFindOne;
     AdminPassword.findOne = origFindOne;
     AdminPassword.findOneAndUpdate = origFindOneAndUpdate;
   }

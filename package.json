@@ -8,6 +8,7 @@
   "scripts": {
     "install:all": "cd app/backend && npm install && cd ../frontend && npm install",
     "setup": "cd app/backend && npm run setup",
+    "setup:dev": "cd app/backend && npm run setup:dev",
     "dev:backend": "cd app/backend && npm run dev",
     "dev:frontend": "cd app/frontend && npm run dev",
     "start": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",

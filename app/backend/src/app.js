@@ -142,7 +142,11 @@ app.use('/public', corePublicRouter);
 // 404 Handler
 app.use(errorHandlers.notFound);
 
-// Production Error Handler
-app.use(errorHandlers.productionErrors);
+// Error Handlers
+if (process.env.NODE_ENV === 'development') {
+  app.use(errorHandlers.developmentErrors);
+} else {
+  app.use(errorHandlers.productionErrors);
+}
 
 module.exports = app;

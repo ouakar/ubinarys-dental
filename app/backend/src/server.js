@@ -23,23 +23,33 @@ if (!process.env.JWT_SECRET) missingVars.push('JWT_SECRET');
 
 if (missingVars.length > 0) {
   console.error(
-    `Fatal Error: Missing required environment variable(s): ${missingVars.join(', ')}`
+    `Configuration Error: Missing required environment variable(s): ${missingVars.join(', ')}`
   );
   process.exit(1);
 }
 
+if (process.env.JWT_SECRET.length < 32) {
+  console.error('Configuration Error: JWT_SECRET must be at least 32 characters long.');
+  process.exit(1);
+}
+
 if (process.env.PORT && (Number.isNaN(Number(process.env.PORT)) || Number(process.env.PORT) <= 0)) {
-  console.error(`Fatal Error: Invalid PORT environment variable: "${process.env.PORT}"`);
+  console.error(`Configuration Error: Invalid PORT environment variable: "${process.env.PORT}"`);
   process.exit(1);
 }
 
 const mongoose = require('mongoose');
 const { globSync } = require('glob');
 
-// Load Mongoose models
-const modelsFiles = globSync('./src/models/**/*.js');
-for (const filePath of modelsFiles) {
-  require(path.resolve(filePath));
+// Load Mongoose models with error differentiation
+try {
+  const modelsFiles = globSync('./src/models/**/*.js');
+  for (const filePath of modelsFiles) {
+    require(path.resolve(filePath));
+  }
+} catch (importError) {
+  console.error(`Application Import/Syntax Error: Failed to load models:\n${importError.stack || importError.message}`);
+  process.exit(1);
 }
 
 // 4. Configure Mongoose event handlers without leaking credentials
@@ -76,8 +86,13 @@ async function startServer() {
     server = app.listen(port, '0.0.0.0', () => {
       console.log(`Express running → On PORT : ${server.address().port}`);
     });
+
+    server.on('error', (serverError) => {
+      console.error(`HTTP Server Error: ${serverError.message}\n${serverError.stack}`);
+      process.exit(1);
+    });
   } catch (error) {
-    console.error(`❌ Failed to connect to MongoDB: ${error.message}`);
+    console.error(`MongoDB Connection Error: Failed to connect to MongoDB:\n${error.stack || error.message}`);
     process.exit(1);
   }
 }

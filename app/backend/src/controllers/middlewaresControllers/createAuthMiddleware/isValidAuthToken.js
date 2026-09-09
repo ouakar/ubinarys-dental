@@ -34,11 +34,11 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
 
     const [user, userPassword] = await Promise.all([userPromise, userPasswordPromise]);
 
-    if (!user)
+    if (!user || user.enabled === false)
       return res.status(401).json({
         success: false,
         result: null,
-        message: "User doens't Exist, authorization denied.",
+        message: 'Account is disabled or does not exist, authorization denied.',
         jwtExpired: true,
       });
 

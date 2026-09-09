@@ -38,8 +38,6 @@ const login = async (req, res, { userModel }) => {
       message: 'Aucun compte n\'est enregistré avec cet email.',
     });
 
-  const databasePassword = await UserPasswordModel.findOne({ user: user._id, removed: false });
-
   if (!user.enabled)
     return res.status(409).json({
       success: false,
@@ -47,8 +45,10 @@ const login = async (req, res, { userModel }) => {
       message: 'Votre compte est désactivé, contactez votre administrateur.',
     });
 
-  //  authUser if your has correct password
-  authUser(req, res, {
+  const databasePassword = await UserPasswordModel.findOne({ user: user._id, removed: false });
+
+  //  authUser if user has correct password
+  return await authUser(req, res, {
     user,
     databasePassword,
     password,

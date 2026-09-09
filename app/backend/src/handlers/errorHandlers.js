@@ -49,29 +49,25 @@ exports.notFound = (req, res, next) => {
   In development we show good error messages so if we hit a syntax error or any other previously un-handled error, we can show good info on what happened
 */
 exports.developmentErrors = (error, req, res, next) => {
+  console.error('DEV ERROR:', error);
   error.stack = error.stack || '';
-  const errorDetails = {
-    message: error.message,
-    status: error.status,
-    stackHighlighted: error.stack.replace(/[a-z_-\d]+.js:\d+:\d+/gi, '<mark>$&</mark>'),
-  };
-
-  return res.status(500).json({
+  return res.status(error.status || 500).json({
     success: false,
     message: error.message,
     error: error,
+    stack: error.stack,
   });
 };
 
 /*
   Production Error Handler
 
-  No stacktraces are leaked to admin
+  No stacktraces or raw internal errors are leaked in production
 */
 exports.productionErrors = (error, req, res, next) => {
-  console.error('SERVER TEST ERROR:', error);
-  return res.status(500).json({
+  console.error('PROD ERROR:', error.message);
+  return res.status(error.status || 500).json({
     success: false,
-    message: error.message,
+    message: error.status ? error.message : 'Une erreur interne du serveur est survenue.',
   });
 };

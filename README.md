@@ -67,54 +67,72 @@ cd app/backend
 npm install
 ```
 
-Create `.env` in `app/backend/`:
+### Local development only
+
+For local development with MongoDB running locally on Ubuntu:
+
 ```env
-DATABASE="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/ubinarys?retryWrites=true&w=majority"
-JWT_SECRET="your-strong-random-secret-at-least-32-chars"
-NODE_ENV="production"
-PORT=8888
-FRONTEND_URL="http://192.168.1.50"
-ALLOWED_ORIGINS="http://192.168.1.50,http://192.168.1.50:3000"
-PUBLIC_SERVER_FILE="http://192.168.1.50:8888/"
+DATABASE="mongodb://127.0.0.1:27017/ubinarys?directConnection=true&serverSelectionTimeoutMS=10000"
+JWT_SECRET="CHANGE_ME_TO_A_RANDOM_SECRET_AT_LEAST_32_CHARACTERS"
+NODE_ENV="development"
+PORT="8888"
+FRONTEND_URL="http://localhost:3000"
+ALLOWED_ORIGINS="http://localhost:3000,http://127.0.0.1:3000"
+PUBLIC_SERVER_FILE="http://localhost:8888/"
+ENABLE_DEFAULT_ADMIN="true"
 ```
 
-Create `.env` in `app/frontend/`:
+Initialize development data and default administrator:
+```bash
+npm run setup:dev
+```
+
+**Development-only default administrator credentials:**
+- **Email:** `admin@demo.com`
+- **Password:** `Admin@2026!Local`
+
+> [!CAUTION]
+> These credentials are valid **only** when `NODE_ENV=development` and `ENABLE_DEFAULT_ADMIN=true`. They are strictly rejected in production environments.
+
+### LAN Access & Multi-Computer Setup
+
+To allow other computers on the clinic's local network (LAN) to access the application, configure your `.env` files with your Ubuntu server's static IP:
+
+#### Backend (`app/backend/.env`):
 ```env
-VITE_BACKEND_SERVER="http://192.168.1.50:8888/"
-VITE_WEBSITE_URL="http://192.168.1.50/"
+FRONTEND_URL="http://192.168.11.117:3000"
+ALLOWED_ORIGINS="http://192.168.11.117:3000,http://localhost:3000"
+PUBLIC_SERVER_FILE="http://192.168.11.117:8888/"
+```
+
+#### Frontend (`app/frontend/.env`):
+```env
+VITE_BACKEND_SERVER="http://192.168.11.117:8888/"
+VITE_WEBSITE_URL="http://192.168.11.117:3000/"
 ```
 
 > [!NOTE]
-> **LAN Deployment Notice**: The example IP address (`192.168.1.50`) must be replaced with your clinic server's actual static IP address or domain name.
+> `192.168.11.117` is an example and must match the Ubuntu server’s static IP on your network.
 
-### 3. Initialize database (first time only)
+#### Firewall Configuration (UFW)
+During development or LAN testing, allow incoming traffic on ports 3000 and 8888:
 ```bash
-node src/setup/setup.js
-node src/setup/seedTreatments.js
+sudo ufw allow 3000/tcp comment "Ubinarys Dental Frontend"
+sudo ufw allow 8888/tcp comment "Ubinarys Dental Backend API"
+sudo ufw reload
 ```
 
-### 4. Start backend
-```bash
-npm run dev
-# → Express running on PORT: 8888
-```
+#### Concurrent Desktop Access
+The system supports simultaneous logins from multiple desktop computers (e.g., reception desk and doctor's dental chair). Logging in from a second desktop creates an isolated session without terminating the existing session.
 
-### 5. Frontend setup
-```bash
-cd ../frontend
-npm install
-npm run dev
-# → http://localhost:3000
-```
-
-### 6. Initial Administrator Account
-Configure initial administrator credentials in `/etc/ubinarys/ubinarys.env` (or `app/backend/.env` for local development):
+### Initial Administrator Account (Production)
+In production, set `NODE_ENV=production` and specify strong credentials:
 - `INITIAL_ADMIN_EMAIL`: Your initial admin email address
 - `INITIAL_ADMIN_PASSWORD`: High-entropy password (min 12 characters, uppercase, lowercase, number, special char)
 - `INITIAL_ADMIN_NAME`: Administrator first name
 - `INITIAL_ADMIN_SURNAME`: Administrator last name
 
-Run initial setup once:
+Run initial setup:
 ```bash
 cd app/backend && npm run setup
 ```

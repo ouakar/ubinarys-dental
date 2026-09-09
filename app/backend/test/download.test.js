@@ -147,3 +147,33 @@ test('Authenticated /download with valid parameters reaches controller (returns 
     server.close();
   }
 });
+
+test('Public route /public/download bypass is strictly blocked with 403', async () => {
+  const server = app.listen(0);
+  const port = server.address().port;
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/public/download/invoice/invoice-507f1f77bcf86cd799439011.pdf`);
+    assert.strictEqual(res.status, 403);
+    const body = await res.json();
+    assert.strictEqual(body.success, false);
+    assert.match(body.message, /interdit/);
+  } finally {
+    server.close();
+  }
+});
+
+test('Public route /public/uploads/invoice bypass is strictly blocked with 403', async () => {
+  const server = app.listen(0);
+  const port = server.address().port;
+
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/public/uploads/invoice/invoice-507f1f77bcf86cd799439011.pdf`);
+    assert.strictEqual(res.status, 403);
+    const body = await res.json();
+    assert.strictEqual(body.success, false);
+    assert.match(body.message, /interdit/);
+  } finally {
+    server.close();
+  }
+});

@@ -13,6 +13,19 @@ router.route('/:subPath/:directory/:file').get(function (req, res) {
     const decodedDirectory = decodeURIComponent(directory);
     const decodedFile = decodeURIComponent(file);
 
+    // Block public access to generated documents and downloads
+    const forbiddenPaths = ['download', 'invoices', 'quotes', 'payments', 'invoice', 'quote', 'payment', 'offer'];
+    if (
+      forbiddenPaths.includes(decodedSubPath.toLowerCase()) ||
+      forbiddenPaths.includes(decodedDirectory.toLowerCase())
+    ) {
+      return res.status(403).json({
+        success: false,
+        result: null,
+        message: 'Accès public aux documents générés interdit.',
+      });
+    }
+
     // Define the trusted root directory
     const rootDir = path.join(__dirname, '../../public');
 

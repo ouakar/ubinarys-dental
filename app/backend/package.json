@@ -10,6 +10,7 @@
     "dev": "nodemon src/server.js --ignore public/",
     "production": "cross-env NODE_ENV=production node src/server.js",
     "setup": "node src/setup/setup.js",
+    "setup:dev": "cross-env NODE_ENV=development ENABLE_DEFAULT_ADMIN=true node src/setup/setup.js",
     "upgrade": "node src/setup/upgrade.js",
     "db:reset-dangerous": "node src/setup/reset.js",
     "test": "node --test test/*.test.js",

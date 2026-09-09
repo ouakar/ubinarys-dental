@@ -42,6 +42,14 @@ const downloadPdf = async (req, res, { directory, id }) => {
 
     res.set('Content-Disposition', `attachment; filename="${fileId}"`);
     return res.download(targetLocation, fileId, (error) => {
+      try {
+        const fs = require('fs');
+        if (fs.existsSync(targetLocation)) {
+          fs.unlinkSync(targetLocation);
+        }
+      } catch (cleanupErr) {
+        // ignore cleanup error
+      }
       if (error && !res.headersSent) {
         return res.status(500).json({
           success: false,

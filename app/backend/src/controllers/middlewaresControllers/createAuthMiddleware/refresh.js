@@ -24,6 +24,16 @@ const refresh = async (req, res, { userModel, jwtSecret = 'JWT_SECRET' }) => {
       });
     }
 
+    const UserModel = mongoose.model(userModel);
+    const user = await UserModel.findOne({ _id: verified.id, removed: false });
+    if (!user || user.enabled === false) {
+      return res.status(401).json({
+        success: false,
+        message: 'Account is disabled or does not exist',
+        jwtExpired: true,
+      });
+    }
+
     const userPassword = await UserPassword.findOne({ user: verified.id, removed: false });
     if (!userPassword || !userPassword.loggedSessions.includes(refreshToken)) {
       return res.status(401).json({
@@ -38,16 +48,19 @@ const refresh = async (req, res, { userModel, jwtSecret = 'JWT_SECRET' }) => {
       verified.remember || (verified.exp && verified.iat && (verified.exp - verified.iat > 8 * 24 * 60 * 60))
     );
 
+    const crypto = require('crypto');
+    const sessionId = verified.sessionId || (crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(16).toString('hex'));
+
     // Generate new access token
     const newToken = jwt.sign(
-      { id: verified.id },
+      { id: verified.id, sessionId },
       process.env[jwtSecret],
       { expiresIn: '15m' }
     );
 
     // Generate new rotated refresh token with preserved lifetime
     const newRefreshToken = jwt.sign(
-      { id: verified.id, remember: isRemembered },
+      { id: verified.id, sessionId, remember: isRemembered },
       process.env[jwtSecret],
       { expiresIn: isRemembered ? '30d' : '7d' }
     );
