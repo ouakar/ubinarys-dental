@@ -41,18 +41,18 @@ if (process.env.PORT && (Number.isNaN(Number(process.env.PORT)) || Number(proces
 const mongoose = require('mongoose');
 const { globSync } = require('glob');
 
-// Load Mongoose models with error differentiation
+// Stage 2: Load models with explicit error differentiation
 try {
   const modelsFiles = globSync('./src/models/**/*.js');
   for (const filePath of modelsFiles) {
     require(path.resolve(filePath));
   }
 } catch (importError) {
-  console.error(`Application Import/Syntax Error: Failed to load models:\n${importError.stack || importError.message}`);
+  console.error(`Model Import/Syntax Error: Failed to load models:\n${importError.stack || importError.message}`);
   process.exit(1);
 }
 
-// 4. Configure Mongoose event handlers without leaking credentials
+// Configure Mongoose event handlers without leaking credentials
 mongoose.connection.on('connected', () => {
   console.log('✅ MongoDB connected successfully.');
 });
@@ -72,14 +72,29 @@ mongoose.connection.on('error', (error) => {
 let server;
 
 async function startServer() {
+  // Stage 3: Connect to MongoDB
   try {
     console.log('Connecting to MongoDB...');
     await mongoose.connect(process.env.DATABASE, {
       serverSelectionTimeoutMS: 10000,
     });
     console.log('✅ Database connection established.');
+  } catch (mongoError) {
+    console.error(`MongoDB Connection Error: Failed to connect to MongoDB:\n${mongoError.stack || mongoError.message}`);
+    process.exit(1);
+  }
 
-    const app = require('./app');
+  // Stage 4: Import the Express application
+  let app;
+  try {
+    app = require('./app');
+  } catch (appError) {
+    console.error(`Application Import/Syntax Error: Failed to load Express application:\n${appError.stack || appError.message}`);
+    process.exit(1);
+  }
+
+  // Stage 5: Start HTTP server
+  try {
     const port = process.env.PORT || 8888;
     app.set('port', port);
 
@@ -91,8 +106,8 @@ async function startServer() {
       console.error(`HTTP Server Error: ${serverError.message}\n${serverError.stack}`);
       process.exit(1);
     });
-  } catch (error) {
-    console.error(`MongoDB Connection Error: Failed to connect to MongoDB:\n${error.stack || error.message}`);
+  } catch (serverError) {
+    console.error(`HTTP Server Error: Failed to start HTTP server:\n${serverError.stack || serverError.message}`);
     process.exit(1);
   }
 }

@@ -51,16 +51,27 @@ async function setupApp(options = {}) {
     const name = process.env.INITIAL_ADMIN_NAME || 'UBINARYS';
     const surname = process.env.INITIAL_ADMIN_SURNAME || 'Admin';
 
-    // Development default administrator
-    if (isDev && enableDefaultAdmin && (!email || !password)) {
-      email = email || DEV_DEFAULT_EMAIL;
-      password = password || DEV_DEFAULT_PASSWORD;
-      console.log('ℹ️  Using development-only default administrator account.');
+    const hasEmail = Boolean(email && email.trim());
+    const hasPassword = Boolean(password && password.trim());
+
+    // Development default administrator logic
+    if (isDev && enableDefaultAdmin) {
+      if ((hasEmail && !hasPassword) || (!hasEmail && hasPassword)) {
+        console.error(
+          '❌ Error: Both INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD must be provided, or neither to use development defaults.'
+        );
+        process.exit(1);
+      }
+      if (!hasEmail && !hasPassword) {
+        email = DEV_DEFAULT_EMAIL;
+        password = DEV_DEFAULT_PASSWORD;
+        console.log('ℹ️  Using development-only default administrator account.');
+      }
     }
 
-    // Production checks
+    // Production checks or when default admin is disabled
     if (!isDev || !enableDefaultAdmin) {
-      if (!email) {
+      if (!hasEmail) {
         console.error('❌ Error: INITIAL_ADMIN_EMAIL environment variable is missing.');
         process.exit(1);
       }
@@ -68,7 +79,7 @@ async function setupApp(options = {}) {
         console.error('❌ Error: INITIAL_ADMIN_EMAIL is not a valid email address.');
         process.exit(1);
       }
-      if (!password) {
+      if (!hasPassword) {
         console.error('❌ Error: INITIAL_ADMIN_PASSWORD environment variable is missing.');
         process.exit(1);
       }

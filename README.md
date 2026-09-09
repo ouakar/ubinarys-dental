@@ -40,32 +40,110 @@
 
 ---
 
-## ⚙️ Local Setup
+## ⚙️ Installation & Deployment
 
-### Quick Start (Ubuntu/Linux)
-If you are on Ubuntu, you can use the automated setup script:
+### Operating System Support
+- **Ubuntu 24.04 LTS (Noble Numbat)**
+- **Ubuntu 22.04 LTS (Jammy Jellyfish)**
+- Node.js runtime: **Node.js 24 LTS** (required, Node 20/22/25 are rejected)
+- Database: **MongoDB Community Edition 8.0** (or 7.0+)
+
+---
+
+### Automated Ubuntu Installation
+
+Run the staged Ubuntu installer from any working directory:
+
 ```bash
+# Normal online installation (local MongoDB on Ubuntu server)
 bash setup.sh
+
+# With specific LAN IP pre-configured:
+LAN_IP=192.168.11.117 bash setup.sh
+
+# Non-interactive mode:
+NON_INTERACTIVE=true ALLOW_DEV_SEED=true bash setup.sh
 ```
 
-### Manual Setup
+#### Air-Gapped / Disconnected Installation
+> [!IMPORTANT]
+> **Local MongoDB vs. Air-Gapped Installation**:
+> - **Local MongoDB**: MongoDB runs locally on the Ubuntu host machine instead of MongoDB Atlas in the cloud. Initial package installation still downloads packages from Ubuntu, NodeSource, and MongoDB repositories over the internet.
+> - **Air-Gapped Installation (`AIRGAPPED=true`)**: Complete offline isolation with zero network calls. All prerequisites (Node 24, npm 10+, mongod, mongosh, build tools, Chromium) must be pre-installed and dependencies cached.
 
-#### 1. Prerequisites
-- **Node.js 24 LTS** (v24.x required, check with `node --version`)
-- **npm 10+** (check with `npm --version`)
-- MongoDB Atlas account or local MongoDB
-
-#### 2. Clone the repo
 ```bash
-git clone https://github.com/ouakar/ubinarys-dental.git
-cd ubinarys-dental
+AIRGAPPED=true bash setup.sh
 ```
 
-#### 3. Backend setup
+---
+
+### Manual Installation (Step-by-Step)
+
+#### 1. System Packages & Node.js 24 LTS
 ```bash
-cd app/backend
-npm install
+sudo apt-get update -y
+sudo apt-get install -y git curl build-essential gnupg
+
+# Install Node.js 24 LTS
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+sudo apt-get install -y nodejs
 ```
+
+Verify versions:
+```bash
+node --version   # Must output v24.x.x
+npm --version    # Must output 10.x.x+
+```
+
+#### 2. Install MongoDB Community Edition 8.0
+Add official MongoDB 8.0 repository for Ubuntu 22.04 (jammy) or 24.04 (noble):
+```bash
+UBUNTU_CODENAME=$(grep -E '^VERSION_CODENAME=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
+ARCH=$(dpkg --print-architecture)
+
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+  sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor --yes
+
+echo "deb [ arch=${ARCH} signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu ${UBUNTU_CODENAME}/mongodb-org/8.0 multiverse" | \
+  sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+
+sudo apt-get update -y
+sudo apt-get install -y mongodb-org mongodb-mongosh
+
+# Start and enable MongoDB
+sudo systemctl enable --now mongod
+```
+
+> [!CAUTION]
+> **MongoDB LAN Security**: MongoDB must remain bound to `127.0.0.1` (localhost). **Never** expose port `27017` to the LAN or open it in UFW!
+
+#### 3. Environment Configuration
+
+Copy example environment files (existing `.env` files are never overwritten):
+```bash
+cp app/backend/.env.example app/backend/.env
+cp app/frontend/.env.example app/frontend/.env
+chmod 600 app/backend/.env app/frontend/.env
+```
+
+Validate `.env` formatting and secure permissions:
+```bash
+node app/backend/src/setup/validateEnv.js app/backend/.env
+```
+
+> [!WARNING]
+> - Never duplicate variable definitions in `.env`.
+> - `JWT_SECRET` must be at least 32 characters and cannot use default placeholders.
+> - Do not use `https://` URLs during Vite development unless TLS certificates are configured.
+
+#### 4. Install Dependencies & Build
+```bash
+npm ci
+(cd app/backend && npm ci)
+(cd app/frontend && npm ci && npm run build)
+```
+
+---
 
 ### Local development only
 
@@ -94,14 +172,16 @@ npm run setup:dev
 > [!CAUTION]
 > These credentials are valid **only** when `NODE_ENV=development` and `ENABLE_DEFAULT_ADMIN=true`. They are strictly rejected in production environments.
 
+---
+
 ### LAN Access & Multi-Computer Setup
 
-To allow other computers on the clinic's local network (LAN) to access the application, configure your `.env` files with your Ubuntu server's static IP:
+To allow other clinic computers (e.g. reception desk & dentist chairs) on the local network (LAN) to connect:
 
 #### Backend (`app/backend/.env`):
 ```env
 FRONTEND_URL="http://192.168.11.117:3000"
-ALLOWED_ORIGINS="http://192.168.11.117:3000,http://localhost:3000"
+ALLOWED_ORIGINS="http://192.168.11.117:3000,http://localhost:3000,http://127.0.0.1:3000"
 PUBLIC_SERVER_FILE="http://192.168.11.117:8888/"
 ```
 
@@ -112,29 +192,50 @@ VITE_WEBSITE_URL="http://192.168.11.117:3000/"
 ```
 
 > [!NOTE]
-> `192.168.11.117` is an example and must match the Ubuntu server’s static IP on your network.
+> Replace `192.168.11.117` with your Ubuntu clinic server's static LAN IP.
 
 #### Firewall Configuration (UFW)
-During development or LAN testing, allow incoming traffic on ports 3000 and 8888:
 ```bash
 sudo ufw allow 3000/tcp comment "Ubinarys Dental Frontend"
 sudo ufw allow 8888/tcp comment "Ubinarys Dental Backend API"
 sudo ufw reload
 ```
 
-#### Concurrent Desktop Access
-The system supports simultaneous logins from multiple desktop computers (e.g., reception desk and doctor's dental chair). Logging in from a second desktop creates an isolated session without terminating the existing session.
+#### Multi-Desktop Concurrent Access
+The platform allows simultaneous active sessions from multiple desktop computers. Logging in from a second workstation maintains both sessions active independently.
+
+---
 
 ### Initial Administrator Account (Production)
 In production, set `NODE_ENV=production` and specify strong credentials:
-- `INITIAL_ADMIN_EMAIL`: Your initial admin email address
+- `INITIAL_ADMIN_EMAIL`: Your clinic admin email
 - `INITIAL_ADMIN_PASSWORD`: High-entropy password (min 12 characters, uppercase, lowercase, number, special char)
 - `INITIAL_ADMIN_NAME`: Administrator first name
 - `INITIAL_ADMIN_SURNAME`: Administrator last name
 
-Run initial setup:
 ```bash
 cd app/backend && npm run setup
+```
+
+---
+
+### Diagnostics & Health Verification
+
+Run these standard diagnostic checks on the Ubuntu host:
+```bash
+# Runtimes & versions
+node --version
+npm --version
+mongod --version
+
+# MongoDB status & ping
+systemctl status mongod --no-pager
+journalctl -u mongod -n 100 --no-pager
+mongosh --quiet --eval 'db.runCommand({ ping: 1 })'
+
+# Backend health endpoints
+curl -i http://127.0.0.1:8888/health/live
+curl -i http://127.0.0.1:8888/health/ready
 ```
 
 ## 🚀 Production Deployment & Systemd Service
